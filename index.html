@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Docolco LLC — Premium cleaning, packaging and protection products for homes and businesses. Fast delivery across the United States.">
+<meta property="og:title" content="Docolco LLC — Quality Products for Every Need">
+<meta property="og:description" content="Premium cleaning, packaging and protection products. Shop online with secure Stripe payments.">
+<meta property="og:type" content="website">
+<title>Docolco LLC — Quality Products | Official Store</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+
+<div id="scroll-line"></div>
+
+<!-- ══════════ NAV ══════════ -->
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="#hero" class="nav-logo">
+      <img src="img/logo/docolco-logo.png" alt="Docolco LLC">
+      <div class="nav-logo-text">
+        <span class="nav-logo-name">DOCOLCO LLC</span>
+        <span class="nav-logo-sub">Marketer</span>
+      </div>
+    </a>
+
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#about">About</a></li>
+      <li><a href="#products">Products</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+
+    <div style="display:flex;align-items:center;gap:1rem;">
+      <button class="cart-btn" id="cartIcon" aria-label="Shopping cart">
+        🛒
+        <span class="cart-count" id="cartCount">0</span>
+      </button>
+      <a href="#products" class="nav-cta">Shop Now</a>
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ══════════ HERO ══════════ -->
+<section id="hero">
+  <div class="hero-left">
+    <div class="hero-tag">
+      <span class="hero-tag-dot"></span>
+      Ships across the United States
+    </div>
+    <h1 class="hero-h1">
+      Quality Products<br>
+      for Every <span class="accent">Need</span>
+    </h1>
+    <p class="hero-desc">
+      From professional-grade cleaning solutions to industrial packaging,
+      Docolco LLC delivers premium products designed for homes, businesses,
+      and institutions across the United States.
+    </p>
+    <div class="hero-btns">
+      <a href="#products" class="btn-primary">Browse Products</a>
+      <a href="#about" class="btn-outline">Learn More</a>
+    </div>
+    <div class="hero-stats">
+      <div>
+        <div class="stat-n">9+</div>
+        <div class="stat-l">Products<br>available</div>
+      </div>
+      <div>
+        <div class="stat-n">🇺🇸</div>
+        <div class="stat-l">Shipping<br>nationwide</div>
+      </div>
+      <div>
+        <div class="stat-n">100%</div>
+        <div class="stat-l">Secure<br>payments</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-right" aria-hidden="true">
+    <div class="hero-products-preview">
+      <div class="preview-card">
+        <img src="img/productos/liquid-detergent.jpg" alt="Liquid Detergent" class="preview-img">
+        <span class="preview-name">Liquid Detergent</span>
+      </div>
+      <div class="preview-card">
+        <img src="img/productos/garbage-bag.jpg" alt="Garbage Bags" class="preview-img">
+        <span class="preview-name">Garbage Bags</span>
+      </div>
+      <div class="preview-card">
+        <img src="img/productos/stretch-film.jpg" alt="Stretch Film" class="preview-img">
+        <span class="preview-name">Stretch Film</span>
+      </div>
+      <div class="preview-card">
+        <img src="img/productos/soft-gloves.jpg" alt="Soft Gloves" class="preview-img">
+        <span class="preview-name">Soft Gloves</span>
+      </div>
+      <div class="preview-card">
+        <img src="img/productos/cling-wrap.jpg" alt="Cling Wrap" class="preview-img">
+        <span class="preview-name">Cling Wrap</span>
+      </div>
+      <div class="preview-card">
+        <img src="img/productos/dishwashing-liquid.jpg" alt="Dish Soap" class="preview-img">
+        <span class="preview-name">Dish Soap</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-inner">
+    <span class="ticker-item">Free shipping on orders over $50</span>
+    <span class="ticker-sep"> ◆ </span>
+    <span class="ticker-item">Secure payments with Stripe</span>
+    <span class="ticker-sep"> ◆ </span>
+    <span class="ticker-item">Professional-grade cleaning products</span>
+    <span class="ticker-sep"> ◆ </span>
+    <span class="ticker-item">Industrial packaging solutions</span>
+    <span class="ticker-sep"> ◆ </span>
+    <span class="ticker-item">Free shipping on orders over $50</span>
+    <span class="ticker-sep"> ◆ </span>
+    <span class="ticker-item">Secure payments with Stripe</span>
+    <span class="ticker-sep"> ◆ </span>
+    <span class="ticker-item">Professional-grade cleaning products</span>
+    <span class="ticker-sep"> ◆ </span>
+    <span class="ticker-item">Industrial packaging solutions</span>
+    <span class="ticker-sep"> ◆ </span>
+  </div>
+</div>
+
+<!-- ══════════ ABOUT ══════════ -->
+<section id="about">
+  <div class="section-inner">
+    <div class="about-grid reveal">
+      <div class="about-visual">
+        <div class="about-logo-box">
+          <img src="img/logo/docolco-logo.png" alt="Docolco LLC Logo">
+          <div class="about-badge">Est. USA</div>
+        </div>
+      </div>
+      <div class="about-body">
+        <div class="section-label">Who We Are</div>
+        <h2 class="section-title">Your trusted supplier<br>across the U.S.</h2>
+        <p>Docolco LLC is a marketer specialized in distributing premium cleaning, packaging, and protection products designed to meet the demands of both residential and commercial environments.</p>
+        <p>We source high-quality products that combine performance, safety, and value — from professional-grade detergents and floor cleaners to industrial packaging films and waste management solutions. Every product in our catalog meets rigorous quality standards.</p>
+        <p>Based in the United States, we supply homes, institutions, commercial kitchens, warehouses, and businesses with the essential products they need to operate cleanly and efficiently.</p>
+        <div class="about-pills">
+          <span class="pill">Cleaning</span>
+          <span class="pill">Packaging</span>
+          <span class="pill">Protection</span>
+          <span class="pill">Waste Management</span>
+          <span class="pill">USA Nationwide</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ PRODUCTS ══════════ -->
+<section id="products">
+  <div class="section-inner">
+    <div class="products-header reveal">
+      <div>
+        <div class="section-label">Our Catalog</div>
+        <h2 class="section-title">Shop Our Products</h2>
+        <p style="color:var(--muted);font-size:.92rem;max-width:480px;line-height:1.7;">
+          Professional-grade products for every environment.
+          Click on any product to see full details.
+        </p>
+      </div>
+      <div class="filter-bar">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="cleaning">Cleaning</button>
+        <button class="filter-btn" data-filter="packaging">Packaging</button>
+        <button class="filter-btn" data-filter="protection">Protection</button>
+        <button class="filter-btn" data-filter="waste">Waste</button>
+      </div>
+    </div>
+
+    <div class="products-grid">
+
+      <!-- PRODUCTO 1 -->
+      <div class="product-card" data-id="1" data-cat="cleaning">
+        <div class="product-img-wrap">
+          <span class="product-cat-badge">Cleaning</span>
+          <img src="img/productos/liquid-detergent.jpg" alt="Liquid Detergent"
+               onerror="this.src='img/placeholder.svg'">
+        </div>
+        <div class="product-info">
+          <div class="product-name">Liquid Detergent</div>
+          <p class="product-desc">High-efficacy floral liquid detergent for professional-grade cleanliness and fabric care.</p>
+          <div class="product-avail">Available: 4L · 1L bottles</div>
+          <div class="product-price">$8.99</div>
+          <button class="product-add-btn" data-id="1">+ Add to Cart</button>
+        </div>
+      </div>
+
+      <!-- PRODUCTO 2 -->
+      <div class="product-card" data-id="2" data-cat="cleaning">
+        <div class="product-img-wrap">
+          <span class="product-cat-badge">Cleaning</span>
+          <img src="img/productos/cloth-softener.jpg" alt="Cloth Softener"
+               onerror="this.src='img/placeholder.svg'">
+        </div>
+        <div class="product-info">
+          <div class="product-name">Cloth Softener</div>
+          <p class="product-desc">Premium fabric softener with floral fragrance for long-lasting softness and care.</p>
+          <div class="product-avail">Available: 4L · 1L bottles</div>
+          <div class="product-price">$7.99</div>
+          <button class="product-add-btn" data-id="2">+ Add to Cart</button>
+        </div>
+      </div>
+
+      <!-- PRODUCTO 3 -->
+      <div class="product-card" data-id="3" data-cat="cleaning">
+        <div class="product-img-wrap">
+          <span class="product-cat-badge">Cleaning</span>
+          <img src="img/productos/floor-cleaner.jpg" alt="Floor Cleaner"
+               onerror="this.src='img/placeholder.svg'">
+        </div>
+        <div class="product-info">
+          <div class="product-name">Floor Cleaner</div>
+          <p class="product-desc">High-efficacy floor cleaner in Lima Pomegranate and Sea Breeze scents for all surfaces.</p>
+          <div class="product-avail">Available: 4L · 1L bottles</div>
+          <div class="product-price">$9.99</div>
+          <button class="product-add-btn" data-id="3">+ Add to Cart</button>
+        </div>
+      </div>
+
+      <!-- PRODUCTO 4 -->
+      <div class="product-card" data-id="4" data-cat="cleaning">
+        <div class="product-img-wrap">
+          <span class="product-cat-badge">Cleaning</span>
+          <img src="img/productos/dishwashing-liquid.jpg" alt="Dishwashing Liquid"
+               onerror="this.src='img/placeholder.svg'">
+        </div>
+        <div class="product-info">
+          <div class="product-name">Dishwashing Liquid</div>
+          <p class="product-desc">Lemon-scented liquid dish soap for rapid grease cutting and kitchen hygiene.</p>
+          <div class="product-avail">Available: 1L · 500ml bottles</div>
+          <div class="product-price">$5.99</div>
+          <button class="product-add-btn" data-id="4">+ Add to Cart</button>
+        </div>
+      </div>
+
+      <!-- PRODUCTO 5 -->
+      <div class="product-card" data-id="5" data-cat="protection">
+        <div class="product-img-wrap">
+          <span class="product-cat-badge">Protection</span>
+          <img src="img/productos/soft-gloves.jpg" alt="Soft Gloves"
+               onerror="this.src='img/placeholder.svg'">
+        </div>
+        <div class="product-info">
+          <div class="product-name">Soft Gloves</div>
+          <p class="product-desc">Durable cleaning gloves for household, institutional, and manual cleaning tasks.</p>
+          <div class="product-avail">Sizes: S · M · L</div>
+          <div class="product-price">$4.99</div>
+          <button class="product-add-btn" data-id="5">+ Add to Cart</button>
+        </div>
+      </div>
+
+      <!-- PRODUCTO 6 -->
+      <div class="product-card" data-id="6" data-cat="packaging">
+        <div class="product-img-wrap">
+          <span class="product-cat-badge">Packaging</span>
+          <img src="img/productos/cling-wrap.jpg" alt="Cling Wrap"
+               onerror="this.src='img/placeholder.svg'">
+        </div>
+        <div class="product-info">
+          <div class="product-name">Cling Wrap</div>
+          <p class="product-desc">Food-grade cling film for airtight food preservation in kitchens and pantries.</p>
+          <div class="product-avail">Available: 300 FT rolls</div>
+          <div class="product-price">$6.49</div>
+          <button class="product-add-btn" data-id="6">+ Add to Cart</button>
+        </div>
+      </div>
+
+      <!-- PRODUCTO 7 -->
+      <div class="product-card" data-id="7" data-cat="packaging">
+        <div class="product-img-wrap">
+          <span class="product-cat-badge">Packaging</span>
+          <img src="img/productos/stretch-film.jpg" alt="Stretch Film"
+               onerror="this.src='img/placeholder.svg'">
+        </div>
+        <div class="product-info">
+          <div class="product-name">Stretch Film</div>
+          <p class="product-desc">Industrial packaging film for secure pallet stabilization and heavy-duty logistics.</p>
+          <div class="product-avail">Rolls of 1640 FT × 1.64 FT</div>
+          <div class="product-price">$14.99</div>
+          <button class="product-add-btn" data-id="7">+ Add to Cart</button>
+        </div>
+      </div>
+
+      <!-- PRODUCTO 8 -->
+      <div class="product-card" data-id="8" data-cat="waste">
+        <div class="product-img-wrap">
+          <span class="product-cat-badge">Waste</span>
+          <img src="img/productos/garbage-bag.jpg" alt="Garbage Bags"
+               onerror="this.src='img/placeholder.svg'">
+        </div>
+        <div class="product-info">
+          <div class="product-name">Garbage Bags</div>
+          <p class="product-desc">Premium LDPE waste bags for heavy-duty household and industrial waste containment.</p>
+          <div class="product-avail">10-pack · White, Black, Green or 3-Color</div>
+          <div class="product-price">$8.49</div>
+          <button class="product-add-btn" data-id="8">+ Add to Cart</button>
+        </div>
+      </div>
+
+      <!-- PRODUCTO 9 -->
+      <div class="product-card" data-id="9" data-cat="cleaning">
+        <div class="product-img-wrap">
+          <span class="product-cat-badge">Cleaning</span>
+          <img src="img/productos/bright-steel-spiral.jpg" alt="Bright Steel Spiral"
+               onerror="this.src='img/placeholder.svg'">
+        </div>
+        <div class="product-info">
+          <div class="product-name">Bright Steel Spiral</div>
+          <p class="product-desc">Heavy-duty stainless steel scouring sponge for stubborn grime and burnt residues.</p>
+          <div class="product-avail">2-pack units</div>
+          <div class="product-price">$3.99</div>
+          <button class="product-add-btn" data-id="9">+ Add to Cart</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- CHECKOUT CTA -->
+    <div style="margin-top:2.5rem;text-align:center;" class="reveal">
+      <button class="btn-primary" id="goToCheckout" style="font-size:1rem;padding:1rem 3rem;">
+        🛒 Proceed to Checkout
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- MODAL PRODUCTO -->
+<div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="mName">Product</span>
+      <button class="modal-close" id="modalClose" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-grid">
+        <div class="modal-img-wrap">
+          <img id="mImg" src="" alt="Product">
+        </div>
+        <div>
+          <div class="modal-cat" id="mCat"></div>
+          <p class="modal-desc" id="mDesc"></p>
+          <div class="modal-avail" id="mAvail"></div>
+          <div class="modal-price" id="mPrice"></div>
+          <button class="modal-add-btn" id="mAddBtn" data-id="">
+            + Add to Cart
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ CHECKOUT + STRIPE ══════════ -->
+<section id="checkout">
+  <div class="section-inner">
+    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:2rem;" class="reveal">
+      <button id="backToShop" class="btn-outline" style="border-color:var(--border);color:var(--text);padding:.6rem 1.2rem;font-size:.85rem;">← Back to Shop</button>
+      <div>
+        <div class="section-label">Secure Checkout</div>
+        <h2 class="section-title" style="margin-bottom:0;">Complete Your Order</h2>
+      </div>
+    </div>
+    <div class="checkout-grid reveal">
+
+      <!-- CART SUMMARY -->
+      <div class="cart-summary">
+        <h3>Order Summary</h3>
+        <div id="cartItems">
+          <div class="empty-cart">Your cart is empty</div>
+        </div>
+        <div class="cart-total" id="cartTotal"></div>
+      </div>
+
+      <!-- STRIPE FORM -->
+      <div>
+        <div class="stripe-form" id="checkoutFormWrap">
+          <h3>Payment Details</h3>
+          <p class="stripe-sub">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            Secured by Stripe · SSL encrypted
+          </p>
+
+          <form id="paymentForm">
+            <div class="form-row">
+              <div class="form-field">
+                <label>First name *</label>
+                <input type="text" id="billingName" placeholder="John" required>
+              </div>
+              <div class="form-field">
+                <label>Last name</label>
+                <input type="text" placeholder="Doe">
+              </div>
+            </div>
+            <div class="form-field">
+              <label>Email address *</label>
+              <input type="email" id="billingEmail" placeholder="john@email.com" required>
+            </div>
+            <div class="form-field">
+              <label>Address</label>
+              <input type="text" placeholder="123 Main Street">
+            </div>
+            <div class="form-row">
+              <div class="form-field">
+                <label>City</label>
+                <input type="text" placeholder="New York">
+              </div>
+              <div class="form-field">
+                <label>ZIP Code</label>
+                <input type="text" placeholder="10001">
+              </div>
+            </div>
+
+            <!-- STRIPE CARD ELEMENT -->
+            <div class="form-field">
+              <label>Card information *</label>
+              <div id="stripe-card-element"></div>
+              <div id="card-errors" role="alert"></div>
+            </div>
+
+            <button type="submit" class="pay-btn" id="payBtn">
+              <div class="spinner"></div>
+              <span class="btn-text">Pay Now — Secure Order</span>
+            </button>
+
+            <div class="secure-badges">
+              <span class="secure-badge">🔒 SSL Secure</span>
+              <span class="secure-badge">💳 Stripe Protected</span>
+              <span class="secure-badge">✓ No data stored</span>
+            </div>
+          </form>
+
+          <!-- SUCCESS STATE -->
+          <div class="pay-success" id="paySuccess">
+            <div style="font-size:3rem;margin-bottom:1rem;">✅</div>
+            <h3>Order Confirmed!</h3>
+            <p>
+              Thank you, <strong id="successName"></strong>!<br>
+              A confirmation has been sent to <strong id="successEmail"></strong>.<br><br>
+              We'll process your order and ship it within 2–3 business days.
+            </p>
+            <a href="#products" class="btn-primary" style="display:inline-block;margin-top:1.5rem;">
+              Continue Shopping
+            </a>
+          </div>
+        </div>
+
+        <!-- NOTA DE PRUEBA -->
+        <div style="margin-top:1rem;padding:1rem;background:#FFF8E1;border:1px solid #F0C040;border-radius:4px;font-size:.78rem;color:#666;">
+          <strong>🧪 Test mode:</strong> Use card <code>4242 4242 4242 4242</code>, any future date, any CVC.
+          Replace <code>STRIPE_PUBLIC_KEY</code> in main.js with your real key before going live.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ CONTACT ══════════ -->
+<section id="contact">
+  <div class="section-inner">
+    <div class="contact-grid reveal">
+      <div>
+        <div class="section-label">Get In Touch</div>
+        <h2 class="section-title">Contact Us</h2>
+        <p style="color:rgba(255,255,255,.6);margin-bottom:2rem;font-size:.92rem;line-height:1.7;">
+          Have questions about our products, bulk orders,
+          or wholesale inquiries? We're here to help.
+        </p>
+        <div class="contact-info-item">
+          <div class="contact-info-icon">📧</div>
+          <div>
+            <div class="contact-info-label">Email</div>
+            <div class="contact-info-val">
+              <a href="mailto:info@docolco.com">info@docolco.com</a>
+            </div>
+          </div>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-info-icon">🇺🇸</div>
+          <div>
+            <div class="contact-info-label">Location</div>
+            <div class="contact-info-val">United States · Nationwide Shipping</div>
+          </div>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-info-icon">📦</div>
+          <div>
+            <div class="contact-info-label">Wholesale & Bulk Orders</div>
+            <div class="contact-info-val">
+              <a href="mailto:wholesale@docolco.com">wholesale@docolco.com</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="contact-form">
+        <div class="form-row">
+          <div class="form-field">
+            <label>First Name</label>
+            <input type="text" placeholder="John">
+          </div>
+          <div class="form-field">
+            <label>Last Name</label>
+            <input type="text" placeholder="Doe">
+          </div>
+        </div>
+        <div class="form-field">
+          <label>Email *</label>
+          <input type="email" placeholder="john@email.com" id="cEmail">
+        </div>
+        <div class="form-field">
+          <label>Subject</label>
+          <select>
+            <option value="">— Select topic —</option>
+            <option>Product inquiry</option>
+            <option>Wholesale / Bulk order</option>
+            <option>Shipping question</option>
+            <option>Order support</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label>Message</label>
+          <textarea placeholder="Tell us how we can help you..."></textarea>
+        </div>
+        <button class="contact-submit" id="contactBtn">Send Message</button>
+        <div class="contact-ok" id="contactOk">
+          ✔ Message received — we'll reply within 24 hours.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ FOOTER ══════════ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <img src="img/logo/docolco-logo.png" alt="Docolco LLC">
+        <p>Premium cleaning, packaging and protection products for homes and businesses across the United States.</p>
+      </div>
+      <div>
+        <div class="footer-col-title">Navigation</div>
+        <ul class="footer-links">
+          <li><a href="#hero">Home</a></li>
+          <li><a href="#about">About Us</a></li>
+          <li><a href="#products">Products</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Policies</div>
+        <ul class="footer-links">
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">Shipping & Returns</a></li>
+          <li><a href="#">Store Policy</a></li>
+          <li><a href="#">FAQ</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">© 2025 Docolco LLC · All rights reserved · United States</span>
+      <div class="footer-legal">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms</a>
+        <a href="#">Cookies</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/main.js"></script>
+</body>
+</html>
