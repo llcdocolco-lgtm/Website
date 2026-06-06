@@ -1,0 +1,16 @@
+# Herramientas internas
+generate-products.py
+CLAUDE.md
+
+# Excel con datos del negocio
+data/products.xlsx
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Entorno local
+.env
+node_modules/
+.DS_Store

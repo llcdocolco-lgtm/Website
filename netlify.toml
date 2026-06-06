@@ -1,0 +1,18 @@
+# netlify.toml — configuración del proyecto Docolco
+# Coloca este archivo en la raíz de la carpeta docolco/
+
+[build]
+  # Carpeta donde están las Netlify Functions
+  functions = "netlify/functions"
+
+[functions]
+  # Node.js 18 para las functions
+  node_bundler = "esbuild"
+
+# Headers de seguridad para el sitio
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"

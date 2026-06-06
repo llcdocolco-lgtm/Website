@@ -1,34 +1,16 @@
 /* ═══════════════════════════════════════════
    DOCOLCO LLC — assets/js/main.js
-   Carrito + Stripe + UI
+   Carrito + Stripe Seguro (backend) + UI
    ═══════════════════════════════════════════ */
 
-// ══════════════════════════════
-// CONFIGURACIÓN STRIPE
-// ══════════════════════════════
-// ⚠️ IMPORTANTE: Reemplaza con tu clave pública real de Stripe
-// Encuéntrala en: dashboard.stripe.com → Developers → API keys
-const STRIPE_PUBLIC_KEY = 'pk_test_REEMPLAZA_CON_TU_CLAVE_PUBLICA';
+const STRIPE_PUBLIC_KEY  = 'pk_test_51Tbp7zAbTZyD8rvRd4d0L2LtdnO2rYtZSRycTvO8SgWRJPx23ciEPT2smuCeddCI3JT1aTHshVzhR2hVh6Tiak3T00WZDLthTn';
+const PAYMENT_INTENT_URL = '/.netlify/functions/create-payment-intent';
 
-// ══════════════════════════════
-// PRODUCTOS (sincronizado con el HTML)
-// ══════════════════════════════
-const PRODUCTS = [
-  { id: 1, name: 'Liquid Detergent',       price: 8.99,  img: 'img/productos/liquid-detergent.jpg',   cat: 'cleaning' },
-  { id: 2, name: 'Cloth Softener',         price: 7.99,  img: 'img/productos/cloth-softener.jpg',     cat: 'cleaning' },
-  { id: 3, name: 'Floor Cleaner',          price: 9.99,  img: 'img/productos/floor-cleaner.jpg',      cat: 'cleaning' },
-  { id: 4, name: 'Dishwashing Liquid',     price: 5.99,  img: 'img/productos/dishwashing-liquid.jpg', cat: 'cleaning' },
-  { id: 5, name: 'Soft Gloves',            price: 4.99,  img: 'img/productos/soft-gloves.jpg',        cat: 'protection' },
-  { id: 6, name: 'Cling Wrap',             price: 6.49,  img: 'img/productos/cling-wrap.jpg',         cat: 'packaging' },
-  { id: 7, name: 'Stretch Film',           price: 14.99, img: 'img/productos/stretch-film.jpg',       cat: 'packaging' },
-  { id: 8, name: 'Garbage Bags',           price: 8.49,  img: 'img/productos/garbage-bag.jpg',        cat: 'waste' },
-  { id: 9, name: 'Bright Steel Spiral',    price: 3.99,  img: 'img/productos/bright-steel-spiral.jpg',cat: 'cleaning' },
-];
+// Filled by products-loader.js before initProductCards is called
+window.PRODUCTS = window.PRODUCTS || [];
 
-// ══════════════════════════════
-// ESTADO DEL CARRITO
-// ══════════════════════════════
 let cart = [];
+
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -40,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }, { passive: true });
 
   /* ── 2. NAV SCROLL + ACTIVE ── */
-  const navbar = document.querySelector('nav');
+  const navbar   = document.querySelector('nav');
   const sections = document.querySelectorAll('section[id]');
   const navLinks = document.querySelectorAll('.nav-links a');
   window.addEventListener('scroll', () => {
@@ -57,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ham.addEventListener('click', () => {
       nl.classList.toggle('open');
       const isOpen = nl.classList.contains('open');
-      const spans = ham.querySelectorAll('span');
+      const spans  = ham.querySelectorAll('span');
       spans[0].style.transform = isOpen ? 'rotate(45deg) translate(5px,5px)' : '';
       spans[1].style.opacity   = isOpen ? '0' : '1';
       spans[2].style.transform = isOpen ? 'rotate(-45deg) translate(5px,-5px)' : '';
@@ -65,78 +47,32 @@ document.addEventListener('DOMContentLoaded', () => {
     nl.querySelectorAll('a').forEach(a => a.addEventListener('click', () => nl.classList.remove('open')));
   }
 
-  /* ── 4. REVEAL ── */
+  /* ── 4. REVEAL (non-product elements) ── */
   const revObs = new IntersectionObserver(entries => {
     entries.forEach(e => {
       if (e.isIntersecting) { e.target.classList.add('in'); revObs.unobserve(e.target); }
     });
   }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
-  document.querySelectorAll('.reveal').forEach(el => revObs.observe(el));
+  document.querySelectorAll('.reveal:not(.product-card)').forEach(el => revObs.observe(el));
 
-  /* ── 5. STAGGER PRODUCTS ── */
-  const cards = document.querySelectorAll('.product-card');
-  const stObs = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        const i = [...cards].indexOf(e.target);
-        e.target.style.transitionDelay = (i * 0.06) + 's';
-        e.target.classList.add('in');
-        stObs.unobserve(e.target);
-      }
-    });
-  }, { threshold: 0.08 });
-  cards.forEach(c => { c.classList.add('reveal'); stObs.observe(c); });
-
-  /* ── 6. FILTER PRODUCTOS ── */
-  const filterBtns = document.querySelectorAll('.filter-btn');
-  filterBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      filterBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      const f = btn.dataset.filter;
-      cards.forEach(c => {
-        c.dataset.hidden = (f !== 'all' && c.dataset.cat !== f) ? 'true' : 'false';
-      });
-    });
-  });
-
-  /* ── 7. MODAL PRODUCTO ── */
-  const overlay   = document.getElementById('modalOverlay');
-  const mImg      = document.getElementById('mImg');
-  const mCat      = document.getElementById('mCat');
-  const mName     = document.getElementById('mName');
-  const mDesc     = document.getElementById('mDesc');
-  const mAvail    = document.getElementById('mAvail');
-  const mPrice    = document.getElementById('mPrice');
-  const mAddBtn   = document.getElementById('mAddBtn');
-  const mClose    = document.getElementById('modalClose');
-
-  cards.forEach(card => {
-    card.addEventListener('click', e => {
-      if (e.target.closest('.product-add-btn')) return;
-      const id = parseInt(card.dataset.id);
-      const p  = PRODUCTS.find(p => p.id === id);
-      if (!p) return;
-      if (mImg)   { mImg.src = card.querySelector('.product-img-wrap img')?.src || ''; mImg.alt = p.name; }
-      if (mCat)   mCat.textContent  = card.dataset.cat;
-      if (mName)  mName.textContent = card.querySelector('.product-name')?.textContent || p.name;
-      if (mDesc)  mDesc.textContent = card.querySelector('.product-desc')?.textContent || '';
-      if (mAvail) mAvail.textContent= card.querySelector('.product-avail')?.textContent || '';
-      if (mPrice) mPrice.textContent= '$' + p.price.toFixed(2);
-      if (mAddBtn) mAddBtn.dataset.id = id;
-      overlay?.classList.add('open');
-      document.body.style.overflow = 'hidden';
-    });
-  });
+  /* ── MODAL CLOSE HANDLERS ── */
+  const overlay = document.getElementById('modalOverlay');
+  const mClose  = document.getElementById('modalClose');
+  const mAddBtn = document.getElementById('mAddBtn');
 
   function closeModal() { overlay?.classList.remove('open'); document.body.style.overflow = ''; }
   mClose?.addEventListener('click', closeModal);
   overlay?.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
-  /* ── 8. AÑADIR AL CARRITO ── */
+  mAddBtn?.addEventListener('click', () => {
+    addToCart(mAddBtn.dataset.id);
+    closeModal();
+  });
+
+  /* ── ADD TO CART ── */
   function addToCart(productId) {
-    const p = PRODUCTS.find(p => p.id === parseInt(productId));
+    const p = window.PRODUCTS.find(p => p.id === String(productId));
     if (!p) return;
     const existing = cart.find(i => i.id === p.id);
     if (existing) { existing.qty++; }
@@ -145,23 +81,9 @@ document.addEventListener('DOMContentLoaded', () => {
     showCartToast(p.name);
   }
 
-  // Botones "Add to cart" en las cards
-  document.querySelectorAll('.product-add-btn').forEach(btn => {
-    btn.addEventListener('click', e => {
-      e.stopPropagation();
-      addToCart(btn.dataset.id);
-    });
-  });
-
-  // Botón del modal
-  mAddBtn?.addEventListener('click', () => {
-    addToCart(mAddBtn.dataset.id);
-    closeModal();
-  });
-
-  /* ── 9. ACTUALIZAR UI DEL CARRITO ── */
+  /* ── CART UI ── */
   function updateCartUI() {
-    const total = cart.reduce((s, i) => s + i.qty, 0);
+    const total     = cart.reduce((s, i) => s + i.qty, 0);
     const cartCount = document.getElementById('cartCount');
     if (cartCount) {
       cartCount.textContent = total;
@@ -184,8 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
     container.innerHTML = cart.map(item => `
       <div class="cart-item">
         <span class="cart-item-name">${item.name}</span>
-        <span class="cart-item-qty">x${item.qty}</span>
-        <span class="cart-item-price">$${(item.price * item.qty).toFixed(2)}</span>
+        <span class="cart-item-qty">${item.qty} box${item.qty > 1 ? 'es' : ''} × $${item.price.toFixed(2)} = $${(item.price * item.qty).toFixed(2)}</span>
         <button class="cart-item-remove" data-id="${item.id}" title="Remove">✕</button>
       </div>
     `).join('');
@@ -198,51 +119,133 @@ document.addEventListener('DOMContentLoaded', () => {
 
     container.querySelectorAll('.cart-item-remove').forEach(btn => {
       btn.addEventListener('click', () => {
-        cart = cart.filter(i => i.id !== parseInt(btn.dataset.id));
+        cart = cart.filter(i => i.id !== btn.dataset.id);
         updateCartUI();
       });
     });
   }
 
-  /* ── 10. TOAST NOTIFICACIÓN ── */
+  /* ── TOAST ── */
   function showCartToast(name) {
     let toast = document.getElementById('cartToast');
     if (!toast) {
       toast = document.createElement('div');
-      toast.id = 'cartToast';
+      toast.id            = 'cartToast';
       toast.style.cssText = `
-        position:fixed; bottom:2rem; right:2rem; z-index:500;
-        background:#1A3FA8; color:white; padding:.8rem 1.4rem;
-        border-radius:4px; font-size:.85rem; font-weight:600;
+        position:fixed;bottom:2rem;right:2rem;z-index:500;
+        background:#1A3FA8;color:white;padding:.8rem 1.4rem;
+        border-radius:4px;font-size:.85rem;font-weight:600;
         box-shadow:0 4px 20px rgba(0,0,0,.2);
-        transform:translateY(100px); opacity:0;
-        transition:transform .3s, opacity .3s;
+        transform:translateY(100px);opacity:0;
+        transition:transform .3s,opacity .3s;
       `;
       document.body.appendChild(toast);
     }
-    toast.textContent = `✓ ${name} added to cart`;
-    toast.style.transform = 'translateY(0)';
-    toast.style.opacity   = '1';
+    toast.textContent       = `+ ${name} added to cart`;
+    toast.style.transform   = 'translateY(0)';
+    toast.style.opacity     = '1';
     setTimeout(() => {
       toast.style.transform = 'translateY(100px)';
       toast.style.opacity   = '0';
     }, 2500);
   }
 
-  /* ── 11. IR AL CHECKOUT ── */
+  /* ══════════════════════════════════════════════════════════════
+     GLOBAL FUNCTIONS — called by products-loader.js after render
+     and also called here on DOMContentLoaded for any static cards
+  ══════════════════════════════════════════════════════════════ */
+
+  window.initProductCards = function () {
+    const cards = document.querySelectorAll('.product-card');
+    if (!cards.length) return;
+
+    const mImg      = document.getElementById('mImg');
+    const mCat      = document.getElementById('mCat');
+    const mName     = document.getElementById('mName');
+    const mDesc     = document.getElementById('mDesc');
+    const mAvail    = document.getElementById('mAvail');
+    const mPrice    = document.getElementById('mPrice');
+    const mBoxPrice = document.getElementById('mBoxPrice');
+    const mBoxLabel = document.getElementById('mBoxLabel');
+
+    cards.forEach(card => {
+      card.addEventListener('click', e => {
+        if (e.target.closest('.product-add-btn')) return;
+        const id = card.dataset.id;
+        const p  = window.PRODUCTS.find(p => p.id === String(id));
+        if (!p) return;
+        if (mImg)      { mImg.src = card.querySelector('.product-img-wrap img')?.src || ''; mImg.alt = p.name; }
+        if (mCat)      mCat.textContent   = p.categoryLabel || p.category;
+        if (mName)     mName.textContent  = p.name;
+        if (mDesc)     mDesc.textContent  = p.boxContents   || '';
+        if (mAvail)    mAvail.textContent = p.boxContents   || '';
+        if (mPrice)    mPrice.textContent = '$' + p.boxPrice.toFixed(2) + ' / box';
+        if (mBoxPrice) mBoxPrice.textContent = '$' + p.unitPrice.toFixed(2) + ' per unit';
+        if (mBoxLabel) mBoxLabel.textContent = p.boxContents;
+        if (mAddBtn)   mAddBtn.dataset.id = id;
+        overlay?.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      });
+    });
+
+    document.querySelectorAll('.product-add-btn').forEach(btn => {
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        addToCart(btn.dataset.id);
+      });
+    });
+  };
+
+  window.initFilterBtns = function () {
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const cards      = document.querySelectorAll('.product-card');
+    if (!filterBtns.length) return;
+
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const f = btn.dataset.filter;
+        cards.forEach(c => {
+          c.dataset.hidden = (f !== 'all' && c.dataset.cat !== f) ? 'true' : 'false';
+        });
+      });
+    });
+  };
+
+  window.initReveal = function () {
+    const cards = document.querySelectorAll('.product-card');
+    if (!cards.length) return;
+
+    const stObs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          const i = [...cards].indexOf(e.target);
+          e.target.style.transitionDelay = (i * 0.06) + 's';
+          e.target.classList.add('in');
+          stObs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.08 });
+
+    cards.forEach(c => stObs.observe(c));
+  };
+
+  // Call once for any static cards already in the DOM (usually none)
+  window.initProductCards();
+  window.initFilterBtns();
+  window.initReveal();
+
+  /* ── CHECKOUT ── */
   const checkoutBtn = document.getElementById('goToCheckout');
   const checkoutSec = document.getElementById('checkout');
   const backBtn     = document.getElementById('backToShop');
 
   checkoutBtn?.addEventListener('click', () => {
-    if (cart.length === 0) {
-      alert('Your cart is empty. Please add products first.');
-      return;
-    }
+    if (cart.length === 0) { alert('Your cart is empty. Please add products first.'); return; }
     checkoutSec?.classList.add('active');
     checkoutSec?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     renderCartSummary();
-    initStripe();
   });
 
   backBtn?.addEventListener('click', () => {
@@ -250,104 +253,97 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
   });
 
-  /* ── 12. STRIPE INTEGRATION ── */
-  let stripe, cardElement;
-
-  function initStripe() {
-    if (stripe) return; // Ya inicializado
-
-    // Carga el script de Stripe si no está
-    if (!window.Stripe) {
-      const script = document.createElement('script');
-      script.src = 'https://js.stripe.com/v3/';
-      script.onload = setupStripe;
-      document.head.appendChild(script);
-    } else {
-      setupStripe();
-    }
-  }
-
-  function setupStripe() {
-    stripe      = Stripe(STRIPE_PUBLIC_KEY);
-    const elements = stripe.elements();
-
-    cardElement = elements.create('card', {
-      style: {
-        base: {
-          fontFamily: "'Outfit', sans-serif",
-          fontSize: '16px',
-          color: '#1A1A1A',
-          '::placeholder': { color: '#999999' }
-        },
-        invalid: { color: '#C8202A' }
-      }
-    });
-    cardElement.mount('#stripe-card-element');
-
-    cardElement.on('change', ({ error }) => {
-      const errEl = document.getElementById('card-errors');
-      if (errEl) errEl.textContent = error ? error.message : '';
-    });
-  }
-
-  /* ── 13. SUBMIT PAGO ── */
+  /* ── PAYMENT SUBMIT ── */
   const payBtn  = document.getElementById('payBtn');
   const payForm = document.getElementById('paymentForm');
 
   payForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    if (!stripe || !cardElement) { alert('Payment system loading. Please wait.'); return; }
     if (cart.length === 0) { alert('Your cart is empty.'); return; }
 
     payBtn?.classList.add('loading');
     payBtn.disabled = true;
 
-    const name  = document.getElementById('billingName')?.value;
-    const email = document.getElementById('billingEmail')?.value;
+    const name  = document.getElementById('billingName')?.value?.trim();
+    const email = document.getElementById('billingEmail')?.value?.trim();
+    const phone = document.getElementById('billingPhone')?.value?.trim();
 
-    // ─────────────────────────────────────────────────────────────
-    // NOTA IMPORTANTE PARA PRODUCCIÓN:
-    // En producción debes crear un PaymentIntent en tu backend y
-    // recibir el client_secret. El flujo es:
-    // 1. Tu backend recibe el monto y crea PaymentIntent via API Stripe
-    // 2. Tu backend devuelve el client_secret
-    // 3. Aquí confirmas con confirmCardPayment(clientSecret, ...)
-    //
-    // Para testing con tarjeta de prueba usa: 4242 4242 4242 4242
-    // ─────────────────────────────────────────────────────────────
-
-    const { paymentMethod, error } = await stripe.createPaymentMethod({
-      type: 'card',
-      card: cardElement,
-      billing_details: { name, email }
-    });
-
-    if (error) {
-      const errEl = document.getElementById('card-errors');
-      if (errEl) errEl.textContent = error.message;
+    if (!name || !email || !phone) {
       payBtn?.classList.remove('loading');
       payBtn.disabled = false;
-    } else {
-      // paymentMethod.id lo envías a tu backend para procesar
-      console.log('PaymentMethod creado:', paymentMethod.id);
-      showPaymentSuccess(name, email);
+      alert('Please complete all required fields including phone number.');
+      return;
+    }
+
+    try {
+      const cartPayload = cart.map(item => ({ id: item.id, qty: item.qty }));
+      const response = await fetch(PAYMENT_INTENT_URL, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ cart: cartPayload, customerEmail: email, customerPhone: phone, customerName: name }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || 'Server error');
+
+      sessionStorage.setItem('customerName',  name);
+      sessionStorage.setItem('customerEmail', email);
+      window.location.href = data.url;
+
+    } catch (error) {
+      console.error('Payment error:', error);
+      const errEl = document.getElementById('card-errors');
+      if (errEl) errEl.textContent = 'Could not initiate payment. Please try again.';
+      payBtn?.classList.remove('loading');
+      payBtn.disabled = false;
     }
   });
 
-  function showPaymentSuccess(name, email) {
+  /* ── PAYMENT SUCCESS ── */
+  function showPaymentSuccess(name, email, orderId) {
     const form    = document.getElementById('paymentForm');
     const success = document.getElementById('paySuccess');
-    if (form)    form.style.display    = 'none';
+    if (form)    form.style.display = 'none';
     if (success) success.classList.add('show');
-    const nameEl = document.getElementById('successName');
-    const emailEl= document.getElementById('successEmail');
+    const nameEl  = document.getElementById('successName');
+    const emailEl = document.getElementById('successEmail');
+    const orderEl = document.getElementById('successOrderId');
     if (nameEl)  nameEl.textContent  = name;
     if (emailEl) emailEl.textContent = email;
+    if (orderEl) orderEl.textContent = orderId || '';
     cart = [];
     updateCartUI();
   }
 
-  /* ── 14. FORMULARIO CONTACTO ── */
+  document.getElementById('continueShopping')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    const form    = document.getElementById('paymentForm');
+    const success = document.getElementById('paySuccess');
+    if (success) success.classList.remove('show');
+    if (form)    form.style.display = '';
+    checkoutSec?.classList.remove('active');
+    document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
+  });
+
+  /* ── STRIPE RETURN ── */
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('success') === 'true') {
+    const orderId = urlParams.get('order_id') || '';
+    const name    = sessionStorage.getItem('customerName')  || '';
+    const email   = sessionStorage.getItem('customerEmail') || '';
+    sessionStorage.removeItem('customerName');
+    sessionStorage.removeItem('customerEmail');
+    history.replaceState({}, document.title, '/');
+    checkoutSec?.classList.add('active');
+    setTimeout(() => {
+      checkoutSec?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      showPaymentSuccess(name, email, orderId);
+    }, 300);
+  }
+  if (urlParams.get('canceled') === 'true') {
+    history.replaceState({}, document.title, '/');
+  }
+
+  /* ── CONTACT FORM ── */
   const contactBtn = document.getElementById('contactBtn');
   const contactOk  = document.getElementById('contactOk');
   contactBtn?.addEventListener('click', () => {
@@ -361,16 +357,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 900);
   });
 
-  /* ── 15. SMOOTH SCROLL ── */
+  /* ── SMOOTH SCROLL ── */
   document.querySelectorAll('a[href^="#"]').forEach(a => {
     a.addEventListener('click', e => {
       e.preventDefault();
       const target = document.querySelector(a.getAttribute('href'));
-      if (target) window.scrollTo({ top: target.getBoundingClientRect().top + scrollY - 70, behavior: 'smooth' });
+      if (target) window.scrollTo({
+        top: target.getBoundingClientRect().top + scrollY - 70,
+        behavior: 'smooth',
+      });
     });
   });
 
-  /* ── 16. CART ICON CLICK → CHECKOUT ── */
+  /* ── CART ICON ── */
   document.getElementById('cartIcon')?.addEventListener('click', () => {
     if (cart.length === 0) {
       document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
@@ -378,7 +377,6 @@ document.addEventListener('DOMContentLoaded', () => {
       checkoutSec?.classList.add('active');
       checkoutSec?.scrollIntoView({ behavior: 'smooth' });
       renderCartSummary();
-      initStripe();
     }
   });
 

@@ -10,6 +10,12 @@
 <title>Docolco LLC — Quality Products | Official Store</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/styles.css">
+
+<!-- EmailJS CDN -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<!-- Products loader (reads data/products.json) -->
+<script src="assets/js/products-loader.js" defer></script>
+
 </head>
 <body>
 
@@ -67,7 +73,7 @@
     </div>
     <div class="hero-stats">
       <div>
-        <div class="stat-n">9+</div>
+        <div class="stat-n">11+</div>
         <div class="stat-l">Products<br>available</div>
       </div>
       <div>
@@ -84,27 +90,39 @@
   <div class="hero-right" aria-hidden="true">
     <div class="hero-products-preview">
       <div class="preview-card">
-        <img src="img/productos/liquid-detergent.jpg" alt="Liquid Detergent" class="preview-img">
+        <div class="preview-img-frame">
+          <img src="img/productos/liquid-detergent.png" alt="Liquid Detergent" class="preview-img">
+        </div>
         <span class="preview-name">Liquid Detergent</span>
       </div>
       <div class="preview-card">
-        <img src="img/productos/garbage-bag.jpg" alt="Garbage Bags" class="preview-img">
+        <div class="preview-img-frame">
+          <img src="img/productos/garbage-bag.png" alt="Garbage Bags" class="preview-img">
+        </div>
         <span class="preview-name">Garbage Bags</span>
       </div>
       <div class="preview-card">
-        <img src="img/productos/stretch-film.jpg" alt="Stretch Film" class="preview-img">
+        <div class="preview-img-frame">
+          <img src="img/productos/stretch-film.png" alt="Stretch Film" class="preview-img">
+        </div>
         <span class="preview-name">Stretch Film</span>
       </div>
       <div class="preview-card">
-        <img src="img/productos/soft-gloves.jpg" alt="Soft Gloves" class="preview-img">
+        <div class="preview-img-frame">
+          <img src="img/productos/soft-gloves.png" alt="Soft Gloves" class="preview-img">
+        </div>
         <span class="preview-name">Soft Gloves</span>
       </div>
       <div class="preview-card">
-        <img src="img/productos/cling-wrap.jpg" alt="Cling Wrap" class="preview-img">
+        <div class="preview-img-frame">
+          <img src="img/productos/cling-wrap.png" alt="Cling Wrap" class="preview-img">
+        </div>
         <span class="preview-name">Cling Wrap</span>
       </div>
       <div class="preview-card">
-        <img src="img/productos/dishwashing-liquid.jpg" alt="Dish Soap" class="preview-img">
+        <div class="preview-img-frame">
+          <img src="img/productos/dishwashing-liquid.png" alt="Dish Soap" class="preview-img">
+        </div>
         <span class="preview-name">Dish Soap</span>
       </div>
     </div>
@@ -173,161 +191,17 @@
           Click on any product to see full details.
         </p>
       </div>
-      <div class="filter-bar">
+      <div class="filter-bar" id="filterBar">
         <button class="filter-btn active" data-filter="all">All</button>
-        <button class="filter-btn" data-filter="cleaning">Cleaning</button>
-        <button class="filter-btn" data-filter="packaging">Packaging</button>
-        <button class="filter-btn" data-filter="protection">Protection</button>
-        <button class="filter-btn" data-filter="waste">Waste</button>
+        <!-- Category filters added dynamically by products-loader.js -->
       </div>
     </div>
 
-    <div class="products-grid">
-
-      <!-- PRODUCTO 1 -->
-      <div class="product-card" data-id="1" data-cat="cleaning">
-        <div class="product-img-wrap">
-          <span class="product-cat-badge">Cleaning</span>
-          <img src="img/productos/liquid-detergent.jpg" alt="Liquid Detergent"
-               onerror="this.src='img/placeholder.svg'">
-        </div>
-        <div class="product-info">
-          <div class="product-name">Liquid Detergent</div>
-          <p class="product-desc">High-efficacy floral liquid detergent for professional-grade cleanliness and fabric care.</p>
-          <div class="product-avail">Available: 4L · 1L bottles</div>
-          <div class="product-price">$8.99</div>
-          <button class="product-add-btn" data-id="1">+ Add to Cart</button>
-        </div>
+    <div class="products-grid" id="productsGrid">
+      <div style="grid-column:1/-1;text-align:center;
+                  padding:3rem;color:var(--muted);font-size:.9rem">
+        Loading products...
       </div>
-
-      <!-- PRODUCTO 2 -->
-      <div class="product-card" data-id="2" data-cat="cleaning">
-        <div class="product-img-wrap">
-          <span class="product-cat-badge">Cleaning</span>
-          <img src="img/productos/cloth-softener.jpg" alt="Cloth Softener"
-               onerror="this.src='img/placeholder.svg'">
-        </div>
-        <div class="product-info">
-          <div class="product-name">Cloth Softener</div>
-          <p class="product-desc">Premium fabric softener with floral fragrance for long-lasting softness and care.</p>
-          <div class="product-avail">Available: 4L · 1L bottles</div>
-          <div class="product-price">$7.99</div>
-          <button class="product-add-btn" data-id="2">+ Add to Cart</button>
-        </div>
-      </div>
-
-      <!-- PRODUCTO 3 -->
-      <div class="product-card" data-id="3" data-cat="cleaning">
-        <div class="product-img-wrap">
-          <span class="product-cat-badge">Cleaning</span>
-          <img src="img/productos/floor-cleaner.jpg" alt="Floor Cleaner"
-               onerror="this.src='img/placeholder.svg'">
-        </div>
-        <div class="product-info">
-          <div class="product-name">Floor Cleaner</div>
-          <p class="product-desc">High-efficacy floor cleaner in Lima Pomegranate and Sea Breeze scents for all surfaces.</p>
-          <div class="product-avail">Available: 4L · 1L bottles</div>
-          <div class="product-price">$9.99</div>
-          <button class="product-add-btn" data-id="3">+ Add to Cart</button>
-        </div>
-      </div>
-
-      <!-- PRODUCTO 4 -->
-      <div class="product-card" data-id="4" data-cat="cleaning">
-        <div class="product-img-wrap">
-          <span class="product-cat-badge">Cleaning</span>
-          <img src="img/productos/dishwashing-liquid.jpg" alt="Dishwashing Liquid"
-               onerror="this.src='img/placeholder.svg'">
-        </div>
-        <div class="product-info">
-          <div class="product-name">Dishwashing Liquid</div>
-          <p class="product-desc">Lemon-scented liquid dish soap for rapid grease cutting and kitchen hygiene.</p>
-          <div class="product-avail">Available: 1L · 500ml bottles</div>
-          <div class="product-price">$5.99</div>
-          <button class="product-add-btn" data-id="4">+ Add to Cart</button>
-        </div>
-      </div>
-
-      <!-- PRODUCTO 5 -->
-      <div class="product-card" data-id="5" data-cat="protection">
-        <div class="product-img-wrap">
-          <span class="product-cat-badge">Protection</span>
-          <img src="img/productos/soft-gloves.jpg" alt="Soft Gloves"
-               onerror="this.src='img/placeholder.svg'">
-        </div>
-        <div class="product-info">
-          <div class="product-name">Soft Gloves</div>
-          <p class="product-desc">Durable cleaning gloves for household, institutional, and manual cleaning tasks.</p>
-          <div class="product-avail">Sizes: S · M · L</div>
-          <div class="product-price">$4.99</div>
-          <button class="product-add-btn" data-id="5">+ Add to Cart</button>
-        </div>
-      </div>
-
-      <!-- PRODUCTO 6 -->
-      <div class="product-card" data-id="6" data-cat="packaging">
-        <div class="product-img-wrap">
-          <span class="product-cat-badge">Packaging</span>
-          <img src="img/productos/cling-wrap.jpg" alt="Cling Wrap"
-               onerror="this.src='img/placeholder.svg'">
-        </div>
-        <div class="product-info">
-          <div class="product-name">Cling Wrap</div>
-          <p class="product-desc">Food-grade cling film for airtight food preservation in kitchens and pantries.</p>
-          <div class="product-avail">Available: 300 FT rolls</div>
-          <div class="product-price">$6.49</div>
-          <button class="product-add-btn" data-id="6">+ Add to Cart</button>
-        </div>
-      </div>
-
-      <!-- PRODUCTO 7 -->
-      <div class="product-card" data-id="7" data-cat="packaging">
-        <div class="product-img-wrap">
-          <span class="product-cat-badge">Packaging</span>
-          <img src="img/productos/stretch-film.jpg" alt="Stretch Film"
-               onerror="this.src='img/placeholder.svg'">
-        </div>
-        <div class="product-info">
-          <div class="product-name">Stretch Film</div>
-          <p class="product-desc">Industrial packaging film for secure pallet stabilization and heavy-duty logistics.</p>
-          <div class="product-avail">Rolls of 1640 FT × 1.64 FT</div>
-          <div class="product-price">$14.99</div>
-          <button class="product-add-btn" data-id="7">+ Add to Cart</button>
-        </div>
-      </div>
-
-      <!-- PRODUCTO 8 -->
-      <div class="product-card" data-id="8" data-cat="waste">
-        <div class="product-img-wrap">
-          <span class="product-cat-badge">Waste</span>
-          <img src="img/productos/garbage-bag.jpg" alt="Garbage Bags"
-               onerror="this.src='img/placeholder.svg'">
-        </div>
-        <div class="product-info">
-          <div class="product-name">Garbage Bags</div>
-          <p class="product-desc">Premium LDPE waste bags for heavy-duty household and industrial waste containment.</p>
-          <div class="product-avail">10-pack · White, Black, Green or 3-Color</div>
-          <div class="product-price">$8.49</div>
-          <button class="product-add-btn" data-id="8">+ Add to Cart</button>
-        </div>
-      </div>
-
-      <!-- PRODUCTO 9 -->
-      <div class="product-card" data-id="9" data-cat="cleaning">
-        <div class="product-img-wrap">
-          <span class="product-cat-badge">Cleaning</span>
-          <img src="img/productos/bright-steel-spiral.jpg" alt="Bright Steel Spiral"
-               onerror="this.src='img/placeholder.svg'">
-        </div>
-        <div class="product-info">
-          <div class="product-name">Bright Steel Spiral</div>
-          <p class="product-desc">Heavy-duty stainless steel scouring sponge for stubborn grime and burnt residues.</p>
-          <div class="product-avail">2-pack units</div>
-          <div class="product-price">$3.99</div>
-          <button class="product-add-btn" data-id="9">+ Add to Cart</button>
-        </div>
-      </div>
-
     </div>
 
     <!-- CHECKOUT CTA -->
@@ -355,7 +229,19 @@
           <div class="modal-cat" id="mCat"></div>
           <p class="modal-desc" id="mDesc"></p>
           <div class="modal-avail" id="mAvail"></div>
-          <div class="modal-price" id="mPrice"></div>
+          <div class="product-prices" style="margin-top:.6rem;">
+            <div class="price-unit-row">
+              <span class="price-unit-label">Price per box</span>
+              <span class="price-unit-amount" id="mPrice"></span>
+            </div>
+            <div class="price-box-card">
+              <div class="price-box-header">
+                <span>📦</span>
+                <span id="mBoxLabel">BOX</span>
+              </div>
+              <div class="price-box-total" id="mBoxPrice"></div>
+            </div>
+          </div>
           <button class="modal-add-btn" id="mAddBtn" data-id="">
             + Add to Cart
           </button>
@@ -411,6 +297,13 @@
               <input type="email" id="billingEmail" placeholder="john@email.com" required>
             </div>
             <div class="form-field">
+              <label>WhatsApp / Phone number *</label>
+              <input type="tel"
+                     id="billingPhone"
+                     placeholder="+1 (555) 000-0000"
+                     required>
+            </div>
+            <div class="form-field">
               <label>Address</label>
               <input type="text" placeholder="123 Main Street">
             </div>
@@ -425,44 +318,68 @@
               </div>
             </div>
 
-            <!-- STRIPE CARD ELEMENT -->
-            <div class="form-field">
-              <label>Card information *</label>
-              <div id="stripe-card-element"></div>
-              <div id="card-errors" role="alert"></div>
-            </div>
+            <div id="card-errors" role="alert" style="color:var(--red);font-size:.85rem;margin-bottom:.5rem;"></div>
 
+            <div style="
+              background: var(--light);
+              border-left: 3px solid var(--blue);
+              padding: .8rem 1rem;
+              margin-bottom: .8rem;
+              font-size: .82rem;
+              color: var(--muted);
+              line-height: 1.6;
+            ">
+              📦 <strong style="color: var(--text);">Pickup & Shipping:</strong>
+              After payment, our team will contact you within 24 hours
+              via WhatsApp to coordinate pickup at our warehouse or
+              customer-arranged shipping.
+            </div>
             <button type="submit" class="pay-btn" id="payBtn">
               <div class="spinner"></div>
-              <span class="btn-text">Pay Now — Secure Order</span>
+              <span class="btn-text">Proceed to Stripe — Secure Payment 🔒</span>
             </button>
-
-            <div class="secure-badges">
-              <span class="secure-badge">🔒 SSL Secure</span>
-              <span class="secure-badge">💳 Stripe Protected</span>
-              <span class="secure-badge">✓ No data stored</span>
-            </div>
           </form>
-
-          <!-- SUCCESS STATE -->
           <div class="pay-success" id="paySuccess">
-            <div style="font-size:3rem;margin-bottom:1rem;">✅</div>
+            <div style="font-size:3rem; margin-bottom:1rem;">✅</div>
             <h3>Order Confirmed!</h3>
-            <p>
-              Thank you, <strong id="successName"></strong>!<br>
-              A confirmation has been sent to <strong id="successEmail"></strong>.<br><br>
-              We'll process your order and ship it within 2–3 business days.
+
+            <!-- Order ID destacado y buscable -->
+            <div style="
+              background: var(--light);
+              border: 1.5px solid var(--border);
+              border-radius: 4px;
+              padding: .8rem 1.4rem;
+              margin: 1rem auto;
+              max-width: 280px;
+              font-family: 'Courier New', monospace;
+              font-size: 1rem;
+              font-weight: 700;
+              letter-spacing: .06em;
+              color: var(--blue);
+            ">
+              Order ID: <span id="successOrderId">—</span>
+            </div>
+
+            <p style="color: var(--muted); font-size: .82rem; margin-bottom: .6rem;">
+              Save this Order ID — you'll need it to track your order.
             </p>
-            <a href="#products" class="btn-primary" style="display:inline-block;margin-top:1.5rem;">
+
+            <p style="font-size: .9rem; line-height: 1.7; color: var(--text);">
+              Thank you, <strong id="successName"></strong>!<br>
+              A confirmation receipt has been sent to
+              <strong id="successEmail"></strong>.<br><br>
+              Our team will contact you via WhatsApp within
+              <strong>24 hours</strong> to coordinate delivery
+              or pickup at our warehouse.
+            </p>
+
+            <a href="#products"
+               id="continueShopping"
+               class="btn-primary"
+               style="display:inline-block; margin-top:1.5rem;">
               Continue Shopping
             </a>
           </div>
-        </div>
-
-        <!-- NOTA DE PRUEBA -->
-        <div style="margin-top:1rem;padding:1rem;background:#FFF8E1;border:1px solid #F0C040;border-radius:4px;font-size:.78rem;color:#666;">
-          <strong>🧪 Test mode:</strong> Use card <code>4242 4242 4242 4242</code>, any future date, any CVC.
-          Replace <code>STRIPE_PUBLIC_KEY</code> in main.js with your real key before going live.
         </div>
       </div>
     </div>
@@ -496,49 +413,46 @@
             <div class="contact-info-val">United States · Nationwide Shipping</div>
           </div>
         </div>
-        <div class="contact-info-item">
-          <div class="contact-info-icon">📦</div>
-          <div>
-            <div class="contact-info-label">Wholesale & Bulk Orders</div>
-            <div class="contact-info-val">
-              <a href="mailto:wholesale@docolco.com">wholesale@docolco.com</a>
-            </div>
-          </div>
-        </div>
       </div>
 
       <div class="contact-form">
         <div class="form-row">
           <div class="form-field">
             <label>First Name</label>
-            <input type="text" placeholder="John">
+            <!-- AÑADIDO: id="cFirstName" -->
+            <input type="text" placeholder="John" id="cFirstName">
           </div>
           <div class="form-field">
             <label>Last Name</label>
-            <input type="text" placeholder="Doe">
+            <!-- AÑADIDO: id="cLastName" -->
+            <input type="text" placeholder="Doe" id="cLastName">
           </div>
         </div>
         <div class="form-field">
           <label>Email *</label>
-          <input type="email" placeholder="john@email.com" id="cEmail">
+          <!-- AÑADIDO: id="cEmail" modificado -->
+          <input type="email" placeholder="john@email.com" id="cEmail" required>
         </div>
         <div class="form-field">
           <label>Subject</label>
-          <select>
+          <!-- AÑADIDO: id="cSubject" -->
+          <select id="cSubject">
             <option value="">— Select topic —</option>
-            <option>Product inquiry</option>
-            <option>Wholesale / Bulk order</option>
-            <option>Shipping question</option>
-            <option>Order support</option>
-            <option>Other</option>
+            <option value="Product inquiry">Product inquiry</option>
+            <option value="Wholesale / Bulk order">Wholesale / Bulk order</option>
+            <option value="Shipping question">Shipping question</option>
+            <option value="Order support">Order support</option>
+            <option value="Other">Other</option>
           </select>
         </div>
         <div class="form-field">
           <label>Message</label>
-          <textarea placeholder="Tell us how we can help you..."></textarea>
+          <!-- AÑADIDO: id="cMessage" -->
+          <textarea id="cMessage" placeholder="Tell us how we can help you..." required></textarea>
         </div>
-        <button class="contact-submit" id="contactBtn">Send Message</button>
-        <div class="contact-ok" id="contactOk">
+        <!-- AÑADIDO: type="button" para evitar recarga de página accidental -->
+        <button type="button" class="contact-submit" id="contactBtn">Send Message</button>
+        <div class="contact-ok" id="contactOk" style="display:none; margin-top: 1rem; color: #4CAF50; font-weight: 500;">
           ✔ Message received — we'll reply within 24 hours.
         </div>
       </div>
@@ -566,24 +480,108 @@
       <div>
         <div class="footer-col-title">Policies</div>
         <ul class="footer-links">
-          <li><a href="#">Privacy Policy</a></li>
-          <li><a href="#">Terms of Service</a></li>
-          <li><a href="#">Shipping & Returns</a></li>
-          <li><a href="#">Store Policy</a></li>
-          <li><a href="#">FAQ</a></li>
+          <li><a href="privacy-policy.html">Privacy Policy</a></li>
+          <li><a href="terms-of-service.html">Terms of Service</a></li>
+          <li><a href="shipping-returns.html">Shipping &amp; Returns</a></li>
         </ul>
       </div>
     </div>
     <div class="footer-bottom">
       <span class="footer-copy">© 2025 Docolco LLC · All rights reserved · United States</span>
       <div class="footer-legal">
-        <a href="#">Privacy Policy</a>
-        <a href="#">Terms</a>
-        <a href="#">Cookies</a>
+        <a href="privacy-policy.html">Privacy Policy</a>
+        <a href="terms-of-service.html">Terms of Service</a>
+        <a href="shipping-returns.html">Shipping &amp; Returns</a>
       </div>
     </div>
   </div>
 </footer>
+
+<!-- ══════════ EMAILJS SCRIPT INTEGRATION ══════════ -->
+<script>
+  // 1. INICIALIZAR EMAILJS
+  (function(){
+      // Llave pública proporcionada
+      emailjs.init("w9QAR-5g0yer9Jm5l");
+  })();
+
+  // 2. LÓGICA DE ENVÍO DEL FORMULARIO
+  document.addEventListener("DOMContentLoaded", function() {
+    const contactBtn = document.getElementById('contactBtn');
+    
+    if (contactBtn) {
+      contactBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+
+        // Validar que al menos el email y el mensaje existan
+        const emailVal = document.getElementById('cEmail').value;
+        const msgVal = document.getElementById('cMessage').value;
+        
+        if (!emailVal || !msgVal) {
+          alert("Please fill in your Email and Message.");
+          return;
+        }
+
+        // Cambiar estado del botón
+        const originalText = contactBtn.innerText;
+        contactBtn.innerText = "Sending...";
+        contactBtn.disabled = true;
+        contactBtn.style.opacity = "0.7";
+
+        // Preparar los parámetros que coincidan con las variables de tu plantilla EmailJS
+        const templateParams = {
+          first_name: document.getElementById('cFirstName').value,
+          last_name: document.getElementById('cLastName').value,
+          email: emailVal,
+          subject: document.getElementById('cSubject').value,
+          message: msgVal
+        };
+
+        const serviceID = "service_c9vw2x8";
+        const templateID = "template_xio4fhq";
+
+        // Enviar vía EmailJS
+        emailjs.send(serviceID, templateID, templateParams)
+          .then(function(response) {
+             console.log('SUCCESS!', response.status, response.text);
+             // Mostrar mensaje de éxito
+             const okMsg = document.getElementById('contactOk');
+             okMsg.style.display = 'block';
+             okMsg.innerText = "✔ Message received — we'll reply within 24 hours.";
+             okMsg.style.color = "#4CAF50"; // Verde
+             
+             // Limpiar el formulario
+             document.getElementById('cFirstName').value = "";
+             document.getElementById('cLastName').value = "";
+             document.getElementById('cEmail').value = "";
+             document.getElementById('cSubject').value = "";
+             document.getElementById('cMessage').value = "";
+
+             // Restaurar botón
+             contactBtn.innerText = originalText;
+             contactBtn.disabled = false;
+             contactBtn.style.opacity = "1";
+             
+             // Ocultar el mensaje después de 5 segundos
+             setTimeout(() => { okMsg.style.display = 'none'; }, 5000);
+             
+          }, function(error) {
+             console.log('FAILED...', error);
+             const okMsg = document.getElementById('contactOk');
+             okMsg.style.display = 'block';
+             // Ahora mostrará el mensaje de error exacto de EmailJS
+             okMsg.innerText = "✖ Error: " + (error.text || "Failed to send. Check credentials.");
+             okMsg.style.color = "#f44336"; // Rojo
+             
+             // Restaurar botón
+             contactBtn.innerText = originalText;
+             contactBtn.disabled = false;
+             contactBtn.style.opacity = "1";
+          });
+      });
+    }
+  });
+</script>
 
 <script src="assets/js/main.js"></script>
 </body>
