@@ -21,7 +21,7 @@ export default function PrivacyPolicy() {
 
         <section>
           <h2>3. California Residents — CCPA</h2>
-          <p>California residents have the right to know what personal information we collect, the right to request deletion of that information, and the right to opt out of any sale of personal information. We do not sell personal information. To exercise your rights, contact us at <a href="mailto:info@docolco.com">info@docolco.com</a>.</p>
+          <p>California residents have the right to know what personal information we collect, the right to request deletion of that information, and the right to opt out of any sale of personal information. We do not sell personal information. To exercise your rights, contact us at <a href="mailto:llcdocolco@gmail.com">llcdocolco@gmail.com</a>.</p>
         </section>
 
         <section>
@@ -36,7 +36,7 @@ export default function PrivacyPolicy() {
 
         <section>
           <h2>6. Contact</h2>
-          <p>Questions about this policy? Email us at <a href="mailto:info@docolco.com">info@docolco.com</a>.</p>
+          <p>Questions about this policy? Email us at <a href="mailto:llcdocolco@gmail.com">llcdocolco@gmail.com</a>.</p>
         </section>
       </div>
     </div>

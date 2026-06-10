@@ -9,7 +9,7 @@ export default function Contact() {
     const f = e.target
     const subject = encodeURIComponent(`Inquiry from ${f.name.value}`)
     const body    = encodeURIComponent(`${f.message.value}\n\n-- ${f.name.value} | ${f.email.value}`)
-    window.location.href = `mailto:info@docolco.com?subject=${subject}&body=${body}`
+    window.location.href = `mailto:llcdocolco@gmail.com?subject=${subject}&body=${body}`
     setSent(true)
     setTimeout(() => setSent(false), 4000)
   }
@@ -31,11 +31,11 @@ export default function Contact() {
             <div className="contact-details">
               <div className="contact-item">
                 <strong>General</strong>
-                <a href="mailto:info@docolco.com">info@docolco.com</a>
+                <a href="mailto:llcdocolco@gmail.com">llcdocolco@gmail.com</a>
               </div>
               <div className="contact-item">
                 <strong>Wholesale</strong>
-                <a href="mailto:wholesale@docolco.com">wholesale@docolco.com</a>
+                <a href="mailto:llcdocolco@gmail.com">llcdocolco@gmail.com</a>
               </div>
               <div className="contact-item">
                 <strong>Location</strong>

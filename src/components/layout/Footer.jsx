@@ -24,8 +24,8 @@ export default function Footer() {
         <div className="footer-col">
           <h4>Contact</h4>
           <ul>
-            <li><a href="mailto:info@docolco.com">info@docolco.com</a></li>
-            <li><a href="mailto:wholesale@docolco.com">wholesale@docolco.com</a></li>
+            <li><a href="mailto:llcdocolco@gmail.com">llcdocolco@gmail.com</a></li>
+            <li><a href="mailto:llcdocolco@gmail.com">llcdocolco@gmail.com</a></li>
             <li>United States</li>
           </ul>
         </div>

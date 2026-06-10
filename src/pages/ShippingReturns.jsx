@@ -26,12 +26,12 @@ export default function ShippingReturns() {
 
         <section>
           <h2>Returns</h2>
-          <p>Due to the nature of our products (cleaning supplies, packaging materials), all sales are final. If you receive a damaged or incorrect product, please contact us within 48 hours at <a href="mailto:info@docolco.com">info@docolco.com</a> and we will work to resolve the issue.</p>
+          <p>Due to the nature of our products (cleaning supplies, packaging materials), all sales are final. If you receive a damaged or incorrect product, please contact us within 48 hours at <a href="mailto:llcdocolco@gmail.com">llcdocolco@gmail.com</a> and we will work to resolve the issue.</p>
         </section>
 
         <section>
           <h2>Contact</h2>
-          <p>For shipping inquiries: <a href="mailto:info@docolco.com">info@docolco.com</a><br />WhatsApp coordination begins after order confirmation.</p>
+          <p>For shipping inquiries: <a href="mailto:llcdocolco@gmail.com">llcdocolco@gmail.com</a><br />WhatsApp coordination begins after order confirmation.</p>
         </section>
       </div>
     </div>

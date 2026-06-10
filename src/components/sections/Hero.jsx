@@ -50,7 +50,7 @@ export default function Hero({ onShopClick }) {
           <button className="btn btn-white" onClick={onShopClick}>
             Shop Now
           </button>
-          <a href="mailto:wholesale@docolco.com" className="btn btn-outline">
+          <a href="mailto:llcdocolco@gmail.com" className="btn btn-outline">
             Get a Quote
           </a>
         </motion.div>
@@ -75,7 +75,7 @@ export default function Hero({ onShopClick }) {
 
       <div className="hero-tickers">
         <Ticker bg="var(--red)"       reverse={false} content="CLEANING · PACKAGING · PROTECTION · DOCOLCO LLC" />
-        <Ticker bg="var(--blue-dark)" reverse={true}  content="QUALITY PRODUCTS · USA DISTRIBUTOR · info@docolco.com" />
+        <Ticker bg="var(--blue-dark)" reverse={true}  content="QUALITY PRODUCTS · USA DISTRIBUTOR · llcdocolco@gmail.com" />
       </div>
     </section>
   )

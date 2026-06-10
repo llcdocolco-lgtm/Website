@@ -76,7 +76,7 @@
                   padding:3rem;color:var(--muted)">
         Products temporarily unavailable.<br>
         Please contact us at
-        <a href="mailto:info@docolco.com" style="color:var(--blue);">info@docolco.com</a>
+        <a href="mailto:llcdocolco@gmail.com" style="color:var(--blue);">llcdocolco@gmail.com</a>
       </div>`;
   }
 })();

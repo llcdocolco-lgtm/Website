@@ -61,7 +61,7 @@ export default function Shop() {
         {error && (
           <div className="shop-error">
             Products temporarily unavailable. Contact us at{' '}
-            <a href="mailto:info@docolco.com">info@docolco.com</a>
+            <a href="mailto:llcdocolco@gmail.com">llcdocolco@gmail.com</a>
           </div>
         )}
 

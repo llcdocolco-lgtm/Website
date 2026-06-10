@@ -36,7 +36,7 @@ export default function TermsOfService() {
 
         <section>
           <h2>6. Contact</h2>
-          <p>Questions? Contact us at <a href="mailto:info@docolco.com">info@docolco.com</a>.</p>
+          <p>Questions? Contact us at <a href="mailto:llcdocolco@gmail.com">llcdocolco@gmail.com</a>.</p>
         </section>
       </div>
     </div>
