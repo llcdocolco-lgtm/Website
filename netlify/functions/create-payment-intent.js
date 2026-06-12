@@ -2,9 +2,12 @@
 // Crea una Stripe Checkout Session y devuelve la URL de pago.
 // El cliente es redirigido a stripe.com — nunca toca datos de tarjeta en este sitio.
 
-const Stripe = require('stripe');
-const fs     = require('fs');
-const path   = require('path');
+import Stripe from 'stripe';
+import { readFileSync } from 'fs';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 function generateOrderId() {
   const now  = new Date();
@@ -13,12 +16,9 @@ function generateOrderId() {
   return `DCO-${date}-${seq}`;
 }
 
-// Carga el catálogo desde data/products.json en cada request,
-// así los precios se actualizan automáticamente cuando el cliente
-// sube un products.json nuevo a GitHub sin tocar este archivo.
 function loadProducts() {
-  const jsonPath = path.join(__dirname, '../../data/products.json');
-  const raw  = fs.readFileSync(jsonPath, 'utf8');
+  const jsonPath = join(__dirname, '../../data/products.json');
+  const raw  = readFileSync(jsonPath, 'utf8');
   const data = JSON.parse(raw);
 
   if (!data.products || !Array.isArray(data.products)) {
@@ -35,7 +35,7 @@ function loadProducts() {
   return map;
 }
 
-exports.handler = async (event) => {
+export const handler = async (event) => {
 
   if (event.httpMethod === 'OPTIONS') {
     return { statusCode: 200, headers: corsHeaders(), body: '' };
@@ -86,7 +86,7 @@ exports.handler = async (event) => {
     }
 
     const orderId  = generateOrderId();
-    const stripe   = Stripe(process.env.STRIPE_SECRET_KEY);
+    const stripe   = new Stripe(process.env.STRIPE_SECRET_KEY);
     const siteUrl  = process.env.URL || 'http://localhost:8888';
 
     const session = await stripe.checkout.sessions.create({
