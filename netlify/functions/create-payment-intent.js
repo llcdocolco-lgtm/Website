@@ -91,6 +91,8 @@ export const handler = async (event) => {
       line_items:           lineItems,
       mode:                 'payment',
       customer_email:       customerEmail || undefined,
+      phone_number_collection: { enabled: true },
+      billing_address_collection: 'required',
       metadata: {
         order_id:       orderId,
         customer_name:  customerName  || '',
