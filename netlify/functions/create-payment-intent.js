@@ -4,10 +4,7 @@
 
 import Stripe from 'stripe';
 import { readFileSync } from 'fs';
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
+import { join } from 'path';
 
 function generateOrderId() {
   const now  = new Date();
@@ -17,7 +14,7 @@ function generateOrderId() {
 }
 
 function loadProducts() {
-  const jsonPath = join(__dirname, '../../data/products.json');
+  const jsonPath = join(process.cwd(), 'data/products.json');
   const raw  = readFileSync(jsonPath, 'utf8');
   const data = JSON.parse(raw);
 
