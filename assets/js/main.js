@@ -3,7 +3,7 @@
    Carrito + Stripe Seguro (backend) + UI
    ═══════════════════════════════════════════ */
 
-const STRIPE_PUBLIC_KEY  = 'pk_test_51Tbp7zAbTZyD8rvRd4d0L2LtdnO2rYtZSRycTvO8SgWRJPx23ciEPT2smuCeddCI3JT1aTHshVzhR2hVh6Tiak3T00WZDLthTn';
+const STRIPE_PUBLIC_KEY  = 'pk_live_51Tbp7oA5Dhvjamz3KOUBt7bf4N8diK11nWr13BdiujO5YH0JaWds06sEwzpx37u88UiV8jWoxmYXqjsg0E5xnlAQ00iuiIy9BH';
 const PAYMENT_INTENT_URL = '/.netlify/functions/create-payment-intent';
 
 // Filled by products-loader.js before initProductCards is called
