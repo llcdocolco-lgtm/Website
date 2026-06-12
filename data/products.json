@@ -1,12 +1,11 @@
 {
   "generated": "2026-06-06T10:09:27Z",
-  "total": 10,
+  "total": 9,
   "categories": [
     "Cleaning",
     "Packaging",
     "Protection",
-    "Waste",
-    "belleza"
+    "Waste"
   ],
   "products": [
     {
@@ -133,20 +132,6 @@
       "boxContents": "10 Packs/Box",
       "image": "img/productos/garbage-bag.png",
       "imageSource": "map -> garbage-bag.png",
-      "available": true
-    },
-    {
-      "id": "7907171",
-      "name": "Michi",
-      "category": "belleza",
-      "categoryLabel": "belleza",
-      "unitPrice": 0.1,
-      "unitCents": 10,
-      "boxPrice": 0.5,
-      "boxPriceCents": 50,
-      "boxContents": "5",
-      "image": "img/productos/7907171.png",
-      "imageSource": "SKU file",
       "available": true
     }
   ]
