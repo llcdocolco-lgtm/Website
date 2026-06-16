@@ -1,12 +1,11 @@
 {
-  "generated": "2026-06-16T22:01:54Z",
+  "generated": "2026-06-16T22:25:11Z",
   "total": 10,
   "categories": [
     "Cleaning",
     "Packaging",
     "Protection",
-    "Waste",
-    "belleza"
+    "Waste"
   ],
   "products": [
     {
@@ -136,16 +135,16 @@
       "available": true
     },
     {
-      "id": "7907171",
-      "name": "Michi",
-      "category": "belleza",
-      "categoryLabel": "belleza",
-      "unitPrice": 0.1,
-      "unitCents": 10,
-      "boxPrice": 0.5,
-      "boxPriceCents": 50,
-      "boxContents": "5",
-      "image": "img/productos/7907171.png",
+      "id": "8181212812",
+      "name": "prueba",
+      "category": "cleaning",
+      "categoryLabel": "Cleaning",
+      "unitPrice": 1.0,
+      "unitCents": 100,
+      "boxPrice": 100000.0,
+      "boxPriceCents": 10000000,
+      "boxContents": "999 Units/Box",
+      "image": "img/productos/8181212812.jpg",
       "imageSource": "SKU file",
       "available": true
     }
