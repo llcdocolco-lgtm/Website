@@ -37,6 +37,8 @@ export default function Navbar() {
             <img src="/img/logo/docolco-logo.png" alt="Docolco LLC" height="38" />
           </Link>
 
+          <span className="navbar-brand-name">DOCOLCO LLC</span>
+
           <div className="navbar-links">
             <button className="nav-link" onClick={() => scrollTo('shop')}>Shop</button>
             <button className="nav-link" onClick={() => scrollTo('about')}>About</button>
