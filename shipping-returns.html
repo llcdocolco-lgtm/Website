@@ -1,0 +1,323 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Docolco LLC Shipping & Returns â€” How we coordinate delivery, pickup, and returns.">
+<title>Shipping &amp; Returns â€” Docolco LLC</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css">
+<style>
+  .legal-hero {
+    background: linear-gradient(135deg, var(--blue) 0%, var(--blue-dark) 100%);
+    padding: 5rem 2rem 3.5rem;
+    text-align: center;
+    margin-top: 70px;
+  }
+  .legal-hero h1 {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 800;
+    color: white;
+    margin-bottom: .6rem;
+  }
+  .legal-hero p {
+    font-size: .88rem;
+    color: rgba(255,255,255,.6);
+  }
+  .legal-body {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 3rem 2rem 5rem;
+  }
+  .legal-body h2 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--blue);
+    margin: 2.4rem 0 .7rem;
+    padding-bottom: .4rem;
+    border-bottom: 2px solid var(--border);
+  }
+  .legal-body p, .legal-body li {
+    font-size: .91rem;
+    line-height: 1.85;
+    color: #333;
+    margin-bottom: .7rem;
+  }
+  .legal-body ul {
+    padding-left: 1.4rem;
+    margin-bottom: 1rem;
+  }
+  .legal-body a { color: var(--blue); }
+  .legal-body a:hover { color: var(--red); }
+  .back-btn {
+    display: inline-block;
+    margin-bottom: 2rem;
+    font-size: .85rem;
+    font-weight: 600;
+    color: var(--blue);
+    text-decoration: none;
+    border: 1.5px solid var(--border);
+    padding: .45rem 1rem;
+    border-radius: 4px;
+    transition: border-color .2s, color .2s;
+  }
+  .back-btn:hover { border-color: var(--blue); color: var(--blue-dark); }
+  .steps {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin: 1.2rem 0 1.8rem;
+  }
+  .step {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    background: var(--light);
+    border-radius: 8px;
+    padding: 1rem 1.2rem;
+  }
+  .step-num {
+    width: 2rem;
+    height: 2rem;
+    min-width: 2rem;
+    background: var(--blue);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: .82rem;
+    font-weight: 700;
+  }
+  .step-text strong {
+    display: block;
+    font-size: .9rem;
+    color: var(--text);
+    margin-bottom: .2rem;
+  }
+  .step-text span {
+    font-size: .84rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .option-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1.2rem 0 1.8rem;
+  }
+  .option-card {
+    background: var(--light);
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 1.2rem;
+  }
+  .option-card h3 {
+    font-size: .92rem;
+    font-weight: 700;
+    color: var(--blue);
+    margin-bottom: .5rem;
+  }
+  .option-card p {
+    font-size: .84rem;
+    color: var(--muted);
+    margin-bottom: 0;
+  }
+  .order-id-sample {
+    font-family: 'Courier New', monospace;
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--blue);
+    background: var(--light);
+    border: 1.5px solid var(--border);
+    display: inline-block;
+    padding: .3rem .8rem;
+    border-radius: 4px;
+    letter-spacing: .06em;
+    margin: .4rem 0;
+  }
+  @media (max-width: 600px) {
+    .legal-body { padding: 2rem 1.2rem 3rem; }
+    .option-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- â•â•â•â•â•â•â•â•â•â• NAV â•â•â•â•â•â•â•â•â•â• -->
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <img src="img/logo/docolco-logo.png" alt="Docolco LLC">
+      <div class="nav-logo-text">
+        <span class="nav-logo-name">DOCOLCO LLC</span>
+        <span class="nav-logo-sub">Marketer</span>
+      </div>
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html#about">About</a></li>
+      <li><a href="index.html#products">Products</a></li>
+      <li><a href="index.html#contact">Contact</a></li>
+    </ul>
+    <div style="display:flex;align-items:center;gap:1rem;">
+      <a href="index.html#products" class="nav-cta">Shop Now</a>
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- â•â•â•â•â•â•â•â•â•â• HERO â•â•â•â•â•â•â•â•â•â• -->
+<div class="legal-hero">
+  <h1>Shipping &amp; Returns</h1>
+  <p>Effective date: June 2025 &nbsp;Â·&nbsp; Docolco LLC, United States</p>
+</div>
+
+<!-- â•â•â•â•â•â•â•â•â•â• CONTENT â•â•â•â•â•â•â•â•â•â• -->
+<div class="legal-body">
+  <a href="index.html" class="back-btn">â† Back to Store</a>
+
+  <p>At Docolco LLC, shipping and pickup are coordinated personally after your purchase. This page explains how the process works, your delivery options, order tracking, and how to request a return.</p>
+
+  <h2>1. How It Works</h2>
+  <p>After your payment is confirmed through Stripe, our team reaches out to coordinate the next steps. Here's what to expect:</p>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-text">
+        <strong>Pay securely at checkout</strong>
+        <span>Complete your order through our Stripe-powered checkout. You'll receive an email receipt and a unique Order ID immediately.</span>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-text">
+        <strong>We contact you within 24 hours</strong>
+        <span>Our team will reach out via <strong>WhatsApp</strong> using the phone number you provided, to confirm your order and discuss delivery or pickup.</span>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-text">
+        <strong>Choose your delivery option</strong>
+        <span>Select warehouse pickup (free) or arrange shipping with a carrier of your choice.</span>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-text">
+        <strong>Receive your order</strong>
+        <span>Pick up at our warehouse or receive the order via your chosen carrier. Use your Order ID for any follow-up.</span>
+      </div>
+    </div>
+  </div>
+
+  <h2>2. Delivery Options</h2>
+
+  <div class="option-grid">
+    <div class="option-card">
+      <h3>ðŸ“¦ Warehouse Pickup</h3>
+      <p>Pick up your order directly at our U.S. warehouse at no additional cost. Our team will confirm the address and available time slots via WhatsApp.</p>
+    </div>
+    <div class="option-card">
+      <h3>ðŸšš Customer-Arranged Shipping</h3>
+      <p>You select and pay for your preferred carrier (e.g., UPS, FedEx, USPS). We prepare your order for carrier pickup. Shipping costs are the customer's responsibility.</p>
+    </div>
+  </div>
+
+  <p>Docolco LLC does not currently offer built-in carrier dispatch at checkout. All logistics are coordinated via WhatsApp after payment is confirmed.</p>
+
+  <h2>3. Delivery Times</h2>
+  <p>Delivery timelines depend on your selected option:</p>
+  <ul>
+    <li><strong>Warehouse pickup:</strong> Available once our team confirms readiness (typically 1â€“2 business days after payment)</li>
+    <li><strong>Customer-arranged shipping:</strong> Depends on your chosen carrier and destination. Standard U.S. delivery typically takes 2â€“7 business days</li>
+  </ul>
+  <p>Docolco LLC is not responsible for delays caused by third-party carriers, weather events, or other circumstances outside our control.</p>
+
+  <h2>4. Order Tracking</h2>
+  <p>Each order is assigned a unique <strong>Order ID</strong> at the time of payment:</p>
+  <p><span class="order-id-sample">DCO-20250601-1432</span></p>
+  <p>This ID appears on your Stripe receipt and on the order confirmation screen. Use this ID to:</p>
+  <ul>
+    <li>Reference your order in WhatsApp conversations with our team</li>
+    <li>Submit a return or refund request</li>
+    <li>Follow up by email at <a href="mailto:llcdocolco@gmail.com">llcdocolco@gmail.com</a></li>
+  </ul>
+  <p>For carrier-shipped orders, the shipping tracking number is provided by your chosen carrier directly.</p>
+
+  <h2>5. Returns</h2>
+  <p>We want you to be happy with your purchase. If there is an issue with your order, please follow these steps:</p>
+  <ul>
+    <li>Contact us at <a href="mailto:llcdocolco@gmail.com">llcdocolco@gmail.com</a> within <strong>7 days</strong> of receiving your order</li>
+    <li>Include your <strong>Order ID</strong> and a clear description of the issue (e.g., wrong item, damaged product)</li>
+    <li>Products must be <strong>unopened and in original, undamaged packaging</strong> to qualify for a return</li>
+    <li>You may also reach us via WhatsApp if you prefer</li>
+  </ul>
+  <p>Once your return request is approved, we will provide instructions for returning the product. Return shipping costs are the customer's responsibility unless the return is due to our error.</p>
+
+  <h2>6. Refunds</h2>
+  <p>Approved refunds are processed through Stripe and returned to the original payment method. Please allow <strong>5â€“10 business days</strong> for the refund to appear on your statement, depending on your bank or card issuer.</p>
+  <p>We reserve the right to deny return requests that do not meet the conditions described above.</p>
+
+  <h2>7. Damaged or Incorrect Orders</h2>
+  <p>If you receive a damaged or incorrect product, please contact us immediately at <a href="mailto:llcdocolco@gmail.com">llcdocolco@gmail.com</a> with your Order ID and a photo of the issue. We will resolve the matter promptly at no cost to you.</p>
+
+  <h2>8. Contact Us</h2>
+  <p>For any shipping, pickup, or return questions:</p>
+  <ul>
+    <li>Email: <a href="mailto:llcdocolco@gmail.com">llcdocolco@gmail.com</a></li>
+    <li>WhatsApp: provided at checkout coordination</li>
+    <li>Company: Docolco LLC, United States</li>
+  </ul>
+</div>
+
+<!-- â•â•â•â•â•â•â•â•â•â• FOOTER â•â•â•â•â•â•â•â•â•â• -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <img src="img/logo/docolco-logo.png" alt="Docolco LLC">
+        <p>Premium cleaning, packaging and protection products for homes and businesses across the United States.</p>
+      </div>
+      <div>
+        <div class="footer-col-title">Navigation</div>
+        <ul class="footer-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="index.html#about">About Us</a></li>
+          <li><a href="index.html#products">Products</a></li>
+          <li><a href="index.html#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Policies</div>
+        <ul class="footer-links">
+          <li><a href="privacy-policy.html">Privacy Policy</a></li>
+          <li><a href="terms-of-service.html">Terms of Service</a></li>
+          <li><a href="shipping-returns.html">Shipping &amp; Returns</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">Â© 2025 Docolco LLC Â· All rights reserved Â· United States</span>
+      <div class="footer-legal">
+        <a href="privacy-policy.html">Privacy Policy</a>
+        <a href="terms-of-service.html">Terms of Service</a>
+        <a href="shipping-returns.html">Shipping &amp; Returns</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('hamburger').addEventListener('click', () => {
+    document.getElementById('navLinks').classList.toggle('open');
+  });
+  window.addEventListener('scroll', () => {
+    document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+  });
+</script>
+</body>
+</html>
