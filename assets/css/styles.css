@@ -376,7 +376,7 @@ section { scroll-margin-top: 70px; }
 .product-card[data-hidden="true"] { display: none; }
 
 .product-img-wrap {
-  background: #F0EFE8; padding: 2rem;
+  background: #FFFFFF; padding: 2rem;
   display: flex; align-items: center; justify-content: center;
   height: 220px; position: relative;
 }
