@@ -1,5 +1,5 @@
 {
-  "generated": "2026-06-17T19:32:35Z",
+  "generated": "2026-06-17T19:32:56Z",
   "total": 11,
   "categories": [
     "Cleaning",
@@ -158,8 +158,8 @@
       "boxPrice": 22.0,
       "boxPriceCents": 2200,
       "boxContents": "22 Units/Box",
-      "image": "img/placeholder.svg",
-      "imageSource": "placeholder",
+      "image": "img/productos/2121212121.jpg",
+      "imageSource": "SKU file",
       "available": true
     }
   ]
