@@ -777,8 +777,19 @@ class ImageManagerApp(tk.Tk):
 
             dest = IMG_DIR / f"{sku}.jpg"
             self._log_write("Convirtiendo imagen a JPG...")
-            with Image.open(src) as img:
-                img.convert("RGB").save(dest, "JPEG", quality=90, optimize=True)
+            img = Image.open(src)
+            if img.mode in ("RGBA", "LA", "P"):
+                background = Image.new("RGB", img.size, (255, 255, 255))
+                if img.mode == "P":
+                    img = img.convert("RGBA")
+                if img.mode in ("RGBA", "LA"):
+                    background.paste(img, mask=img.getchannel("A"))
+                else:
+                    background.paste(img)
+                img = background
+            elif img.mode != "RGB":
+                img = img.convert("RGB")
+            img.save(dest, "JPEG", quality=90)
             self._log_write(f"✓ Guardada como {sku}.jpg")
 
             self._log_write("Regenerando catálogo de productos...")
