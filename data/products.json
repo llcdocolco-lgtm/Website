@@ -1,6 +1,6 @@
 {
-  "generated": "2026-06-17T19:16:20Z",
-  "total": 8,
+  "generated": "2026-06-17T19:20:02Z",
+  "total": 9,
   "categories": [
     "Cleaning",
     "Packaging",
@@ -102,6 +102,20 @@
       "boxPrice": 14.8,
       "boxPriceCents": 1480,
       "boxContents": "24 Units/Box",
+      "image": "img/productos/dishwashing-liquid.png",
+      "imageSource": "map -> dishwashing-liquid.png",
+      "available": true
+    },
+    {
+      "id": "761789",
+      "name": "Dishwashing Liquid 1L",
+      "category": "cleaning",
+      "categoryLabel": "Cleaning",
+      "unitPrice": 2.13,
+      "unitCents": 213,
+      "boxPrice": 21.3,
+      "boxPriceCents": 2130,
+      "boxContents": "12 Units/Box",
       "image": "img/productos/dishwashing-liquid.png",
       "imageSource": "map -> dishwashing-liquid.png",
       "available": true
