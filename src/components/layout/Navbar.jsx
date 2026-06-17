@@ -30,7 +30,7 @@ export default function Navbar() {
       <div className="navbar-inner">
         <Link to="/" className="navbar-logo">
           <div className="navbar-logo-bubble">
-            <img src="/img/logo/docolco-logo-removebg-preview.png" alt="Docolco LLC" height="46" />
+            <img src="/img/logo/docolco-logo-removebg-preview.png" alt="Docolco LLC" height="58" />
           </div>
         </Link>
 
