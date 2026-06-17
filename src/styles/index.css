@@ -177,7 +177,19 @@ h1, h2, h3, h4 {
 }
 .nav-link:hover { opacity: 1; }
 
-.navbar-actions { display: flex; align-items: center; gap: 8px; }
+.navbar-actions { display: flex; align-items: center; gap: 4px; }
+
+/* Nav icon buttons */
+.nav-icon-btn {
+  color: var(--white);
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.78;
+  transition: opacity 0.2s;
+}
+.nav-icon-btn:hover { opacity: 1; }
 
 /* Cart button */
 .cart-btn {
@@ -1029,9 +1041,6 @@ h1, h2, h3, h4 {
 
 /* ═══════ RESPONSIVE ════════════════ */
 @media (max-width: 900px) {
-  .navbar-links { display: none; }
-  .hamburger    { display: flex; }
-
   .products-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; }
 
   .about-inner   { grid-template-columns: 1fr; }
