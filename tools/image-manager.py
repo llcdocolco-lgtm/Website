@@ -779,7 +779,7 @@ class ImageManagerApp(tk.Tk):
             self._log_write("Convirtiendo imagen a JPG...")
             img = Image.open(src)
             if img.mode in ("RGBA", "LA", "P"):
-                background = Image.new("RGB", img.size, (255, 255, 255))
+                background = Image.new("RGB", img.size, (234, 240, 255))
                 if img.mode == "P":
                     img = img.convert("RGBA")
                 if img.mode in ("RGBA", "LA"):
