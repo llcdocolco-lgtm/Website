@@ -1,6 +1,6 @@
 {
-  "generated": "2026-06-17T19:47:52Z",
-  "total": 9,
+  "generated": "2026-06-17T19:49:24Z",
+  "total": 10,
   "categories": [
     "Cleaning",
     "Packaging",
@@ -118,6 +118,20 @@
       "boxContents": "12 Units/Box",
       "image": "img/productos/dishwashing-liquid.png",
       "imageSource": "map -> dishwashing-liquid.png",
+      "available": true
+    },
+    {
+      "id": "761741",
+      "name": "Floor Cleaner Lime Pomegranate 4L",
+      "category": "cleaning",
+      "categoryLabel": "Cleaning",
+      "unitPrice": 4.68,
+      "unitCents": 468,
+      "boxPrice": 46.8,
+      "boxPriceCents": 4680,
+      "boxContents": "4 Units/Box",
+      "image": "img/placeholder.svg",
+      "imageSource": "placeholder",
       "available": true
     },
     {
