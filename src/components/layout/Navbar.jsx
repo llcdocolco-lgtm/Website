@@ -34,8 +34,6 @@ export default function Navbar() {
           </div>
         </Link>
 
-        <span className="navbar-brand-name">DOCOLCO LLC</span>
-
         <div className="navbar-actions">
           <button className="nav-icon-btn" onClick={() => scrollTo('about')} aria-label="About">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
