@@ -148,3 +148,4 @@ ws.freeze_panes = 'A5'
 wb.save('data/products.xlsx')
 print('OK  data/products.xlsx created successfully.')
 print(f'   {len(products)} products — ready to edit and run generate-products.py')
+

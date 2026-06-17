@@ -792,7 +792,7 @@ class ImageManagerApp(tk.Tk):
 
             self._log_write("Sincronizando con GitHub...")
             pull = subprocess.run(
-                ["git", "pull", "--rebase", "origin", "main"],
+                ["git", "pull", "--rebase", "origin", "master"],
                 capture_output=True, text=True, cwd=str(REPO_ROOT),
             )
             if pull.returncode != 0:
@@ -816,7 +816,7 @@ class ImageManagerApp(tk.Tk):
 
             self._log_write("Subiendo a GitHub...")
             push = subprocess.run(
-                ["git", "push", "origin", "main"],
+                ["git", "push", "origin", "master"],
                 capture_output=True, text=True, cwd=str(REPO_ROOT),
             )
             if push.returncode != 0:
@@ -1013,3 +1013,4 @@ class ImageManagerApp(tk.Tk):
 if __name__ == "__main__":
     app = ImageManagerApp()
     app.mainloop()
+
