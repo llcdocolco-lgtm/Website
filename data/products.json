@@ -1,6 +1,6 @@
 {
-  "generated": "2026-06-17T19:36:47Z",
-  "total": 11,
+  "generated": "2026-06-17T19:38:41Z",
+  "total": 9,
   "categories": [
     "Cleaning",
     "Packaging",
@@ -121,20 +121,6 @@
       "available": true
     },
     {
-      "id": "761741",
-      "name": "Floor Cleaner Lime Pomegranate 4L",
-      "category": "cleaning",
-      "categoryLabel": "Cleaning",
-      "unitPrice": 4.68,
-      "unitCents": 468,
-      "boxPrice": 46.8,
-      "boxPriceCents": 4680,
-      "boxContents": "4 Units/Box",
-      "image": "img/placeholder.svg",
-      "imageSource": "placeholder",
-      "available": true
-    },
-    {
       "id": "7907173",
       "name": "Garbage Bags 3-pack",
       "category": "waste",
@@ -146,20 +132,6 @@
       "boxContents": "10 Packs/Box",
       "image": "img/productos/garbage-bag.png",
       "imageSource": "map -> garbage-bag.png",
-      "available": true
-    },
-    {
-      "id": "2121212121",
-      "name": "dinosaurio",
-      "category": "packaging",
-      "categoryLabel": "Packaging",
-      "unitPrice": 1.0,
-      "unitCents": 100,
-      "boxPrice": 22.0,
-      "boxPriceCents": 2200,
-      "boxContents": "22 Units/Box",
-      "image": "img/productos/2121212121.jpg",
-      "imageSource": "SKU file",
       "available": true
     }
   ]
