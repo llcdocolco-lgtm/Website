@@ -1,0 +1,24 @@
+# Instaladores y scripts de setup — no van al repo
+*.exe
+*.ps1
+setup.bat
+
+# Cache de Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Archivos temporales de la mini app
+tools/custom-products.json
+
+# Imágenes con nombres incorrectos (no SKU) — solo deben subir las nombradas por SKU
+img/productos/productos/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editores
+.vscode/
+*.swp
