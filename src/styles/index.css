@@ -167,7 +167,7 @@ h1, h2, h3, h4 {
   justify-content: center;
   background: var(--white);
   border-radius: 999px;
-  padding: 8px 22px;
+  padding: 4px 10px;
   box-shadow: 0 3px 18px rgba(0, 0, 0, 0.28);
   transition: box-shadow 0.2s;
 }
@@ -962,7 +962,7 @@ h1, h2, h3, h4 {
   justify-content: center;
   background: var(--white);
   border-radius: 999px;
-  padding: 14px 30px;
+  padding: 6px 14px;
   margin-bottom: 14px;
   box-shadow: 0 3px 18px rgba(0, 0, 0, 0.35);
 }

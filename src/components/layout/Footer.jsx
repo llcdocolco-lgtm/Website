@@ -6,7 +6,7 @@ export default function Footer() {
       <div className="footer-inner">
         <div className="footer-brand">
           <div className="footer-logo-wrap">
-            <img src="/img/logo/docolco-logo-removebg-preview.png" alt="Docolco LLC" height="62" />
+            <img src="/img/logo/docolco-logo-removebg-preview.png" alt="Docolco LLC" height="78" />
           </div>
           <p className="footer-tagline">Quality products for American businesses.</p>
         </div>
