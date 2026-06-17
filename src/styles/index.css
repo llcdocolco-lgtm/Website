@@ -177,12 +177,12 @@ h1, h2, h3, h4 {
 }
 .nav-link:hover { opacity: 1; }
 
-.navbar-actions { display: flex; align-items: center; gap: 4px; }
+.navbar-actions { display: flex; align-items: center; gap: 10px; }
 
 /* Nav icon buttons */
 .nav-icon-btn {
   color: var(--white);
-  padding: 8px;
+  padding: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -190,6 +190,7 @@ h1, h2, h3, h4 {
   transition: opacity 0.2s;
 }
 .nav-icon-btn:hover { opacity: 1; }
+.nav-icon-btn svg { width: 24px; height: 24px; }
 
 /* Cart button */
 .cart-btn {
