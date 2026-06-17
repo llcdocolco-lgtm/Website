@@ -1,5 +1,5 @@
 {
-  "generated": "2026-06-17T18:58:19Z",
+  "generated": "2026-06-17T19:10:10Z",
   "total": 8,
   "categories": [
     "Cleaning",
@@ -18,8 +18,8 @@
       "boxPrice": 16.5,
       "boxPriceCents": 1650,
       "boxContents": "12 Dozens",
-      "image": "img/placeholder.svg",
-      "imageSource": "placeholder",
+      "image": "img/productos/soft-gloves.png",
+      "imageSource": "map -> soft-gloves.png",
       "available": true
     },
     {
@@ -32,8 +32,8 @@
       "boxPrice": 31.0,
       "boxPriceCents": 3100,
       "boxContents": "28 Rolls/Box",
-      "image": "img/placeholder.svg",
-      "imageSource": "placeholder",
+      "image": "img/productos/cling-wrap.png",
+      "imageSource": "map -> cling-wrap.png",
       "available": true
     },
     {
@@ -46,8 +46,8 @@
       "boxPrice": 23.0,
       "boxPriceCents": 2300,
       "boxContents": "12 Units/Box",
-      "image": "img/placeholder.svg",
-      "imageSource": "placeholder",
+      "image": "img/productos/liquid-detergent.png",
+      "imageSource": "map -> liquid-detergent.png",
       "available": true
     },
     {
@@ -60,8 +60,8 @@
       "boxPrice": 63.8,
       "boxPriceCents": 6380,
       "boxContents": "4 Units/Box",
-      "image": "img/placeholder.svg",
-      "imageSource": "placeholder",
+      "image": "img/productos/liquid_detergent.png",
+      "imageSource": "map -> liquid_detergent.png",
       "available": true
     },
     {
@@ -74,8 +74,8 @@
       "boxPrice": 23.0,
       "boxPriceCents": 2300,
       "boxContents": "12 Units/Box",
-      "image": "img/placeholder.svg",
-      "imageSource": "placeholder",
+      "image": "img/productos/cloth-softener.png",
+      "imageSource": "map -> cloth-softener.png",
       "available": true
     },
     {
@@ -88,8 +88,8 @@
       "boxPrice": 63.8,
       "boxPriceCents": 6380,
       "boxContents": "4 Units/Box",
-      "image": "img/placeholder.svg",
-      "imageSource": "placeholder",
+      "image": "img/productos/cloth-softener (2).png",
+      "imageSource": "map -> cloth-softener (2).png",
       "available": true
     },
     {
@@ -102,8 +102,8 @@
       "boxPrice": 14.8,
       "boxPriceCents": 1480,
       "boxContents": "24 Units/Box",
-      "image": "img/placeholder.svg",
-      "imageSource": "placeholder",
+      "image": "img/productos/dishwashing-liquid.png",
+      "imageSource": "map -> dishwashing-liquid.png",
       "available": true
     },
     {
@@ -116,8 +116,8 @@
       "boxPrice": 33.0,
       "boxPriceCents": 3300,
       "boxContents": "10 Packs/Box",
-      "image": "img/placeholder.svg",
-      "imageSource": "placeholder",
+      "image": "img/productos/garbage-bag.png",
+      "imageSource": "map -> garbage-bag.png",
       "available": true
     }
   ]
