@@ -161,7 +161,19 @@ h1, h2, h3, h4 {
   white-space: nowrap;
 }
 
-.navbar-logo img { height: 38px; }
+.navbar-logo-bubble {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--white);
+  border-radius: 999px;
+  padding: 7px 18px;
+  box-shadow: 0 2px 14px rgba(0, 0, 0, 0.18);
+  transition: box-shadow 0.2s;
+}
+.navbar-logo:hover .navbar-logo-bubble {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.26);
+}
 
 .navbar-links { display: flex; gap: 4px; }
 
@@ -945,12 +957,15 @@ h1, h2, h3, h4 {
 }
 
 .footer-logo-wrap {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background: var(--white);
-  padding: 8px 14px;
-  margin-bottom: 12px;
+  border-radius: 999px;
+  padding: 10px 22px;
+  margin-bottom: 14px;
+  box-shadow: 0 2px 14px rgba(0, 0, 0, 0.25);
 }
-.footer-logo-wrap img { height: 42px; }
 
 .footer-tagline { font-size: 0.83rem; color: rgba(255,255,255,0.48); line-height: 1.6; }
 

@@ -29,7 +29,9 @@ export default function Navbar() {
     <nav className={`navbar${solid ? ' scrolled' : ''}`}>
       <div className="navbar-inner">
         <Link to="/" className="navbar-logo">
-          <img src="/img/logo/docolco-logo.png" alt="Docolco LLC" height="38" />
+          <div className="navbar-logo-bubble">
+            <img src="/img/logo/docolco-logo-removebg-preview.png" alt="Docolco LLC" height="32" />
+          </div>
         </Link>
 
         <span className="navbar-brand-name">DOCOLCO LLC</span>
