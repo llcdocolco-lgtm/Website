@@ -1,4 +1,4 @@
-// netlify/functions/create-payment-intent.js
+// api/create-payment-intent.js
 // Crea una Stripe Checkout Session y devuelve la URL de pago.
 // El cliente es redirigido a stripe.com — nunca toca datos de tarjeta en este sitio.
 
@@ -32,14 +32,21 @@ function loadProducts() {
   return map;
 }
 
-export const handler = async (event) => {
+function setCorsHeaders(res) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+}
 
-  if (event.httpMethod === 'OPTIONS') {
-    return { statusCode: 200, headers: corsHeaders(), body: '' };
+export default async function handler(req, res) {
+  setCorsHeaders(res);
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
   }
 
-  if (event.httpMethod !== 'POST') {
-    return { statusCode: 405, headers: corsHeaders(), body: JSON.stringify({ error: 'Method not allowed' }) };
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
   }
 
   let PRODUCTS;
@@ -47,18 +54,14 @@ export const handler = async (event) => {
     PRODUCTS = loadProducts();
   } catch (err) {
     console.error('Failed to load products.json:', err.message);
-    return {
-      statusCode: 500,
-      headers: corsHeaders(),
-      body: JSON.stringify({ error: 'Product catalog unavailable. Please try again later.' }),
-    };
+    return res.status(500).json({ error: 'Product catalog unavailable. Please try again later.' });
   }
 
   try {
-    const { cart, customerEmail, customerPhone, customerName } = JSON.parse(event.body);
+    const { cart, customerEmail, customerPhone, customerName } = req.body;
 
     if (!cart || !Array.isArray(cart) || cart.length === 0) {
-      return { statusCode: 400, headers: corsHeaders(), body: JSON.stringify({ error: 'Invalid cart' }) };
+      return res.status(400).json({ error: 'Invalid cart' });
     }
 
     const lineItems = [];
@@ -66,11 +69,11 @@ export const handler = async (event) => {
     for (const item of cart) {
       const product = PRODUCTS[String(item.id)];
       if (!product) {
-        return { statusCode: 400, headers: corsHeaders(), body: JSON.stringify({ error: `Product ${item.id} not found` }) };
+        return res.status(400).json({ error: `Product ${item.id} not found` });
       }
       const quantity = parseInt(item.qty);
       if (!quantity || quantity < 1 || quantity > 99) {
-        return { statusCode: 400, headers: corsHeaders(), body: JSON.stringify({ error: `Invalid quantity for product ${item.id}` }) };
+        return res.status(400).json({ error: `Invalid quantity for product ${item.id}` });
       }
       lineItems.push({
         price_data: {
@@ -84,7 +87,7 @@ export const handler = async (event) => {
 
     const orderId  = generateOrderId();
     const stripe   = new Stripe(process.env.STRIPE_SECRET_KEY);
-    const siteUrl  = process.env.URL || 'http://localhost:8888';
+    const siteUrl  = process.env.SITE_URL || `https://${req.headers.host}`;
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -104,28 +107,11 @@ export const handler = async (event) => {
       cancel_url:  `${siteUrl}/`,
     });
 
-    return {
-      statusCode: 200,
-      headers: corsHeaders(),
-      body: JSON.stringify({ url: session.url, orderId }),
-    };
+    return res.status(200).json({ url: session.url, orderId });
 
   } catch (error) {
     console.error('Stripe error:', error.message);
     const statusCode = error.type === 'StripeCardError' ? 400 : 500;
-    return {
-      statusCode,
-      headers: corsHeaders(),
-      body: JSON.stringify({ error: 'Payment processing failed. Please try again.' }),
-    };
+    return res.status(statusCode).json({ error: 'Payment processing failed. Please try again.' });
   }
-};
-
-function corsHeaders() {
-  return {
-    'Access-Control-Allow-Origin':  '*',
-    'Access-Control-Allow-Headers': 'Content-Type',
-    'Access-Control-Allow-Methods': 'POST, OPTIONS',
-    'Content-Type': 'application/json',
-  };
 }

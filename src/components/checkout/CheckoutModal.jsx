@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useCart } from '../../hooks/useCart.jsx'
 
-const PAYMENT_URL = '/.netlify/functions/create-payment-intent'
+const PAYMENT_URL = '/api/create-payment-intent'
 
 export default function CheckoutModal({ open, onClose }) {
   const { items, total } = useCart()

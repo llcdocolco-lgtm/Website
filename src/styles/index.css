@@ -969,6 +969,23 @@ h1, h2, h3, h4 {
 
 .footer-tagline { font-size: 0.83rem; color: rgba(255,255,255,0.48); line-height: 1.6; }
 
+.footer-social { display: flex; gap: 10px; margin-top: 14px; }
+.footer-social a {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.7);
+  transition: border-color 0.2s, background 0.2s, color 0.2s;
+}
+.footer-social a:hover {
+  border-color: var(--gold);
+  background: var(--gold);
+  color: #0D1B40;
+}
+
 .footer-col h4 {
   font-family: 'Syne', sans-serif;
   font-size: 0.75rem;
