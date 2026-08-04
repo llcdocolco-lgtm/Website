@@ -10,7 +10,7 @@ const channels = [
     label:       'WhatsApp',
     description: 'Fastest response — order coordination & delivery',
     action:      'Chat now',
-    href:        'https://wa.me/message/DOCOLCO',
+    href:        'https://wa.me/573503968631',
     accent:      '#25D366',
   },
   {
