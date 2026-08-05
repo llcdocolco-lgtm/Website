@@ -18,10 +18,10 @@ FALLBACK   = 'img/placeholder.svg'
 IMAGE_MAP = {
     '3870540': 'soft-gloves.png',
     '3870541': 'cling-wrap.png',
-    '761765':  'liquid-detergent.png',
+    '761765':  'liquid_detergent.png',
     '761710':  'liquid_detergent.png',
     '761758':  'cloth-softener.png',
-    '761772':  'cloth-softener (2).png',
+    '761772':  'cloth-softener.png',
     '761703':  'dishwashing-liquid.png',
     '761789':  'dishwashing-liquid.png',
     '761796':  'floor-cleaner-pomegranate.png',

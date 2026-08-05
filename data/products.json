@@ -46,8 +46,8 @@
       "boxPrice": 34.8,
       "boxPriceCents": 3480,
       "boxContents": "12 Units/Box",
-      "image": "img/productos/liquid-detergent.png",
-      "imageSource": "map -> liquid-detergent.png",
+      "image": "img/productos/liquid_detergent.png",
+      "imageSource": "map -> liquid_detergent.png",
       "available": true
     },
     {
@@ -88,8 +88,8 @@
       "boxPrice": 34.4,
       "boxPriceCents": 3440,
       "boxContents": "4 Units/Box",
-      "image": "img/productos/cloth-softener (2).png",
-      "imageSource": "map -> cloth-softener (2).png",
+      "image": "img/productos/cloth-softener.png",
+      "imageSource": "map -> cloth-softener.png",
       "available": true
     },
     {
