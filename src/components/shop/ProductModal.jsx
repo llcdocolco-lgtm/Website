@@ -1,9 +1,17 @@
+import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import toast from 'react-hot-toast'
 import { useCart } from '../../hooks/useCart.jsx'
+import { swatchColor } from '../../utils/swatchColor.js'
 
 export default function ProductModal({ product, onClose }) {
   const { addItem } = useCart()
+  const hasVariants = product && Array.isArray(product.images) && product.images.length > 1
+  const [activeImage, setActiveImage] = useState(product?.image)
+
+  useEffect(() => {
+    setActiveImage(product?.image)
+  }, [product])
 
   function handleAdd() {
     addItem(product)
@@ -33,10 +41,24 @@ export default function ProductModal({ product, onClose }) {
             <div className="product-modal-inner">
               <div className="product-modal-img">
                 <img
-                  src={`/${product.image}`}
+                  src={`/${activeImage}`}
                   alt={product.name}
                   onError={e => { e.target.src = '/img/placeholder.svg' }}
                 />
+                {hasVariants && (
+                  <div className="product-swatches product-swatches-modal">
+                    {product.images.map(img => (
+                      <button
+                        key={img}
+                        type="button"
+                        className={`swatch-dot${img === activeImage ? ' is-active' : ''}`}
+                        style={{ background: swatchColor(img) }}
+                        aria-label="Choose scent"
+                        onClick={() => setActiveImage(img)}
+                      />
+                    ))}
+                  </div>
+                )}
               </div>
               <div className="product-modal-info">
                 <span className="product-cat-badge" style={{ position: 'static' }}>{product.categoryLabel}</span>

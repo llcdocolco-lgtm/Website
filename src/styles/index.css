@@ -470,6 +470,26 @@ h1, h2, h3, h4 {
   padding: 4px 10px;
 }
 
+.product-swatches {
+  position: absolute;
+  bottom: 10px; left: 0; right: 0;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+.swatch-dot {
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  border: 2px solid var(--white);
+  box-shadow: 0 0 0 1px var(--border);
+  padding: 0;
+  cursor: pointer;
+  transition: box-shadow 0.15s, transform 0.15s;
+}
+.swatch-dot:hover { transform: scale(1.12); }
+.swatch-dot.is-active { box-shadow: 0 0 0 2px var(--text); }
+.product-swatches-modal { bottom: 16px; }
+
 .product-info { padding: 20px; background: #EAF0FF; }
 .product-name {
   font-family: 'Syne', sans-serif;
@@ -562,6 +582,7 @@ h1, h2, h3, h4 {
 }
 
 .product-modal-img {
+  position: relative;
   background: var(--white);
   display: flex;
   align-items: center;

@@ -24,10 +24,8 @@ IMAGE_MAP = {
     '761772':  'cloth-softener (2).png',
     '761703':  'dishwashing-liquid.png',
     '761789':  'dishwashing-liquid.png',
-    '761796':  'floor-cleaner.png',
-    '761741':  'floor-cleaner.png',
-    '761727':  'floor-cleaner.png',
-    '761734':  'floor-cleaner.png',
+    '761796':  'floor-cleaner-pomegranate.png',
+    '761734':  'floor-cleaner-pomegranate.png',
     '7907173': 'garbage-bag.png',
 }
 

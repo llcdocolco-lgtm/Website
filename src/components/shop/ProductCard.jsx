@@ -1,9 +1,13 @@
+import { useState } from 'react'
 import { motion } from 'framer-motion'
 import toast from 'react-hot-toast'
 import { useCart } from '../../hooks/useCart.jsx'
+import { swatchColor } from '../../utils/swatchColor.js'
 
 export default function ProductCard({ product, onSelect }) {
   const { addItem } = useCart()
+  const hasVariants = Array.isArray(product.images) && product.images.length > 1
+  const [activeImage, setActiveImage] = useState(product.image)
 
   function handleAdd(e) {
     e.stopPropagation()
@@ -25,11 +29,25 @@ export default function ProductCard({ product, onSelect }) {
       <div className="product-img-wrap">
         <span className="product-cat-badge">{product.categoryLabel}</span>
         <img
-          src={`/${product.image}`}
+          src={`/${activeImage}`}
           alt={product.name}
           loading="lazy"
           onError={e => { e.target.src = '/img/placeholder.svg' }}
         />
+        {hasVariants && (
+          <div className="product-swatches" onClick={e => e.stopPropagation()}>
+            {product.images.map(img => (
+              <button
+                key={img}
+                type="button"
+                className={`swatch-dot${img === activeImage ? ' is-active' : ''}`}
+                style={{ background: swatchColor(img) }}
+                aria-label="Choose scent"
+                onClick={() => setActiveImage(img)}
+              />
+            ))}
+          </div>
+        )}
       </div>
       <div className="product-info">
         <div className="product-name">{product.name}</div>
