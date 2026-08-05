@@ -6,6 +6,7 @@ Doble clic en "Iniciar Image Manager.bat" para abrir.
 
 import os
 import sys
+import json
 import subprocess
 import threading
 import webbrowser
@@ -30,18 +31,37 @@ REPO_ROOT       = Path(__file__).parent.parent.resolve()
 IMG_DIR         = REPO_ROOT / "img" / "productos"
 GENERATE_SCRIPT = REPO_ROOT / "generate-products.py"
 EXCEL_PATH      = REPO_ROOT / "data" / "products.xlsx"
+IMAGES_JSON     = REPO_ROOT / "data" / "product-images.json"
 SITE_URL        = "https://docolco.netlify.app"
 
 BLUE     = "#1A3FA8"
 BLUE_DRK = "#122E80"
 WHITE    = "#FFFFFF"
 LIGHT    = "#F8F8F6"
+CARD_BG  = "#FFFFFF"
+BORDER_C = "#E4E4E0"
 MUTED    = "#888888"
 GREEN    = "#1B5E20"
-SEP      = " — "
+RED      = "#CC0000"
 
 CATEGORIES    = ["Cleaning", "Packaging", "Protection", "Waste"]
 ACCEPTED_EXTS = {".jpg", ".jpeg", ".png", ".webp", ".heic", ".bmp", ".tiff", ".tif"}
+
+# Mapa de imágenes con nombre propio para SKUs que no tienen archivo {sku}.jpg/png
+# (debe coincidir con generate-products.py para que la miniatura sea la real).
+IMAGE_MAP = {
+    "3870540": "soft-gloves.png",
+    "3870541": "cling-wrap.png",
+    "761765":  "liquid_detergent.png",
+    "761710":  "liquid_detergent.png",
+    "761758":  "cloth-softener.png",
+    "761772":  "cloth-softener.png",
+    "761703":  "dishwashing-liquid.png",
+    "761789":  "dishwashing-liquid.png",
+    "761796":  "floor-cleaner-pomegranate.png",
+    "761734":  "floor-cleaner-pomegranate.png",
+    "7907173": "garbage-bag.png",
+}
 
 if OPENPYXL_OK:
     _XL_GRAY      = PatternFill("solid", fgColor="F0F0F0")
@@ -53,9 +73,55 @@ if OPENPYXL_OK:
     _XL_SKU_F     = Font(name="Calibri", color="555555", size=10)
     _XL_PRICE_FMT = "$#,##0.00"
 
-_TREE_COLS    = ("sku", "name", "category", "unit_price", "box_price", "box_contents", "available")
-_TREE_HEADERS = ("SKU",  "Nombre",  "Categoría", "P. Unit",  "P. Caja",  "Contenido",    "Activo")
-_TREE_WIDTHS  = (85,     185,        95,           80,          80,         125,             58)
+CARD_W, CARD_H   = 168, 208
+THUMB_W, THUMB_H = 148, 110
+PREVIEW_W, PREVIEW_H = 260, 190
+
+
+def resolve_product_image(sku):
+    """Devuelve la ruta de la imagen real de un SKU, o None si no hay ninguna."""
+    for ext in (".jpg", ".jpeg", ".png", ".webp"):
+        p = IMG_DIR / f"{sku}{ext}"
+        if p.exists():
+            return p
+    mapped = IMAGE_MAP.get(str(sku))
+    if mapped:
+        p = IMG_DIR / mapped
+        if p.exists():
+            return p
+    return None
+
+
+def load_image_overrides():
+    """SKU -> lista de rutas relativas al repo (la primera es la principal)."""
+    if not IMAGES_JSON.exists():
+        return {}
+    try:
+        return json.loads(IMAGES_JSON.read_text(encoding="utf-8"))
+    except Exception:
+        return {}
+
+
+def save_image_overrides(overrides):
+    IMAGES_JSON.parent.mkdir(parents=True, exist_ok=True)
+    IMAGES_JSON.write_text(
+        json.dumps(overrides, indent=2, ensure_ascii=False), encoding="utf-8"
+    )
+
+
+def resolve_images_for_sku(sku, overrides=None):
+    """Lista de rutas (Path) de todas las fotos de un SKU. La primera es la principal.
+    Usa data/product-images.json si el producto tiene varias fotos asignadas;
+    si no, cae al archivo {sku}.jpg/png de siempre."""
+    if overrides is None:
+        overrides = load_image_overrides()
+    rel_paths = overrides.get(str(sku))
+    if rel_paths:
+        valid = [REPO_ROOT / rp for rp in rel_paths if (REPO_ROOT / rp).exists()]
+        if valid:
+            return valid
+    single = resolve_product_image(sku)
+    return [single] if single else []
 
 
 class ImageManagerApp(tk.Tk):
@@ -63,16 +129,15 @@ class ImageManagerApp(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Docolco Product Manager")
-        self.geometry("760x700")
+        self.geometry("900x720")
         self.resizable(True, True)
-        self.minsize(660, 580)
+        self.minsize(760, 560)
         self.configure(bg=WHITE)
 
-        self._image_path    = None
-        self._preview_photo = None
-        self._publishing    = False
-        self._catalog_dirty = False
+        self._publishing   = False
         self._products      = self._read_excel_products()
+        self._thumb_cache   = {}   # sku -> PhotoImage (evita garbage collection)
+        self._search_var    = tk.StringVar()
 
         self._build_menu()
         self._build_ui()
@@ -141,6 +206,16 @@ class ImageManagerApp(tk.Tk):
             ws.row_dimensions[rn].height = 30
         wb.save(EXCEL_PATH)
 
+    def _current_branch(self):
+        try:
+            r = subprocess.run(
+                ["git", "rev-parse", "--abbrev-ref", "HEAD"],
+                capture_output=True, text=True, cwd=str(REPO_ROOT), check=True,
+            )
+            return r.stdout.strip() or "main"
+        except Exception:
+            return "main"
+
     # ── Menu ──────────────────────────────────────────────────────────────────
 
     def _build_menu(self):
@@ -174,739 +249,606 @@ class ImageManagerApp(tk.Tk):
         tk.Label(hdr, text="Product Manager", bg=BLUE, fg="#99B8FF",
                  font=("Helvetica", 10)).pack(anchor="w", padx=20)
 
-        self._nb = ttk.Notebook(self)
-        self._nb.pack(fill="both", expand=True, padx=16, pady=12)
-
-        self._tab_images  = tk.Frame(self._nb, bg=WHITE)
-        self._tab_catalog = tk.Frame(self._nb, bg=WHITE)
-        self._nb.add(self._tab_images,  text="  Imágenes  ")
-        self._nb.add(self._tab_catalog, text="  Catálogo  ")
-
-        self._nb.bind("<<NotebookTabChanged>>", self._on_tab_change)
-
-        self._build_images_tab()
-        self._build_catalog_tab()
-
-    def _on_tab_change(self, _event):
-        tab = self._nb.index(self._nb.select())
-        if tab == 1 and not self._catalog_dirty:
-            fresh = self._read_excel_products()
-            if fresh:
-                self._products = fresh
-                self._reload_catalog_tree()
-                self._update_combo()
-
-    # ── Images tab ────────────────────────────────────────────────────────────
-
-    def _build_images_tab(self):
-        body = tk.Frame(self._tab_images, bg=WHITE)
-        body.pack(fill="both", expand=True, padx=24, pady=16)
-
-        tk.Label(body, text="1.  Selecciona el producto:", bg=WHITE,
-                 font=("Helvetica", 11, "bold"), anchor="w").pack(fill="x", pady=(0, 5))
-
-        self._combo_var = tk.StringVar()
-        self._combo = ttk.Combobox(
-            body, textvariable=self._combo_var,
-            values=[f"{p['sku']}{SEP}{p['name']}" for p in self._products],
-            state="readonly", font=("Helvetica", 10),
-        )
-        self._combo.pack(fill="x")
-        self._combo.bind("<<ComboboxSelected>>", lambda _: self._refresh_images())
-
-        lnk = tk.Label(
-            body,
-            text="¿Producto no aparece? Agrégalo en la pestaña  Catálogo  →",
-            bg=WHITE, fg=BLUE, cursor="hand2",
-            font=("Helvetica", 9, "underline"), anchor="e",
-        )
-        lnk.pack(fill="x", pady=(3, 0))
-        lnk.bind("<Button-1>", lambda _: self._nb.select(1))
-
-        tk.Label(body, text="2.  Selecciona la imagen:", bg=WHITE,
-                 font=("Helvetica", 11, "bold"), anchor="w").pack(fill="x", pady=(14, 5))
-
-        zone = tk.Frame(body, bg=WHITE, highlightbackground=BLUE,
-                        highlightthickness=2, cursor="hand2")
-        zone.pack(fill="x")
-        inner = tk.Frame(zone, bg=WHITE, cursor="hand2")
-        inner.pack(fill="x", padx=2, pady=2)
-
-        self._zone_text = tk.Label(
-            inner,
-            text="Haz clic aquí para seleccionar la imagen\n"
-                 "JPG  ·  PNG  ·  WEBP  ·  HEIC  ·  BMP  ·  TIFF",
-            bg=WHITE, fg=BLUE, cursor="hand2", font=("Helvetica", 10), pady=22,
-        )
-        self._zone_text.pack(fill="x")
-        self._zone_preview = tk.Label(inner, bg=WHITE)
-        self._zone_preview.pack()
-        self._zone_fname = tk.Label(inner, text="", bg=WHITE, fg=MUTED,
-                                     font=("Helvetica", 8), pady=4)
-        self._zone_fname.pack()
-
-        for w in (zone, inner, self._zone_text, self._zone_preview, self._zone_fname):
-            w.bind("<Button-1>", lambda _: self._browse())
-
-        self._dest_label = tk.Label(body, text="", bg=LIGHT, fg=MUTED,
-                                     font=("Helvetica", 9), pady=5, anchor="w", padx=8)
-        self._dest_label.pack(fill="x", pady=(8, 0))
-
-        self._btn = tk.Button(
-            body, text="Publicar en el sitio",
-            bg=BLUE, fg=WHITE, font=("Helvetica", 12, "bold"),
-            relief="flat", bd=0, height=2, cursor="hand2",
-            activebackground=BLUE_DRK, activeforeground=WHITE,
-            state="disabled", command=self._publish_image,
-        )
-        self._btn.pack(fill="x", pady=(10, 6))
-
-        tk.Label(body, text="Estado:", bg=WHITE, fg=MUTED,
-                 font=("Helvetica", 9), anchor="w").pack(fill="x")
-        log_wrap = tk.Frame(body, bg=WHITE)
-        log_wrap.pack(fill="x")
-        sb = tk.Scrollbar(log_wrap)
-        sb.pack(side="right", fill="y")
-        self._log = tk.Text(log_wrap, height=5, font=("Courier", 9),
-                            bg=LIGHT, relief="flat", bd=1, wrap="word",
-                            yscrollcommand=sb.set, state="disabled")
-        self._log.pack(fill="x", side="left", expand=True)
-        sb.config(command=self._log.yview)
-
-    # ── Catalog tab ───────────────────────────────────────────────────────────
-
-    def _build_catalog_tab(self):
-        body = tk.Frame(self._tab_catalog, bg=WHITE)
-        body.pack(fill="both", expand=True, padx=16, pady=12)
-
-        # Title row
-        title_row = tk.Frame(body, bg=WHITE)
-        title_row.pack(fill="x", pady=(0, 6))
-        tk.Label(title_row, text="Catálogo de productos", bg=WHITE,
-                 font=("Helvetica", 12, "bold"), fg=BLUE).pack(side="left")
-        self._dirty_label = tk.Label(title_row, text="", bg=WHITE,
-                                      font=("Helvetica", 9), fg=MUTED)
-        self._dirty_label.pack(side="left", padx=12)
-
-        # Button bar
-        btn_row = tk.Frame(body, bg=WHITE)
-        btn_row.pack(fill="x", pady=(0, 6))
+        toolbar = tk.Frame(self, bg=WHITE)
+        toolbar.pack(fill="x", padx=16, pady=(12, 4))
 
         tk.Button(
-            btn_row, text="+ Agregar producto",
+            toolbar, text="+ Agregar producto",
             bg=BLUE, fg=WHITE, relief="flat", bd=0, cursor="hand2",
-            font=("Helvetica", 10, "bold"), padx=12, pady=5,
-            command=self._new_product_dialog,
+            font=("Helvetica", 10, "bold"), padx=12, pady=6,
+            command=lambda: self._open_product_dialog(None),
         ).pack(side="left")
 
-        tk.Button(
-            btn_row, text="Eliminar seleccionado",
-            bg=LIGHT, fg="#CC0000", relief="flat", bd=1, cursor="hand2",
-            font=("Helvetica", 10), padx=10, pady=5,
-            command=self._delete_selected,
-        ).pack(side="left", padx=6)
+        search_entry = tk.Entry(toolbar, textvariable=self._search_var,
+                                 font=("Helvetica", 10), relief="solid", bd=1)
+        search_entry.pack(side="right", ipady=4, padx=(6, 0))
+        search_entry.insert(0, "")
+        tk.Label(toolbar, text="Buscar:", bg=WHITE, fg=MUTED,
+                 font=("Helvetica", 9)).pack(side="right")
+        self._search_var.trace_add("write", lambda *_: self._render_grid())
 
-        tk.Button(
-            btn_row, text="Abrir en Excel",
-            bg=LIGHT, fg=MUTED, relief="flat", bd=1, cursor="hand2",
-            font=("Helvetica", 9), padx=10, pady=5,
-            command=self._open_excel,
-        ).pack(side="right", padx=6)
-
-        self._save_btn = tk.Button(
-            btn_row, text="Guardar y Publicar",
-            bg=GREEN, fg=WHITE, relief="flat", bd=0, cursor="hand2",
-            font=("Helvetica", 10, "bold"), padx=12, pady=5,
-            state="disabled", command=self._publish_catalog,
-        )
-        self._save_btn.pack(side="right")
-
-        # Hint
+        # Placeholder para el hint "producto agregado" tipo texto guía
         tk.Label(
-            body,
-            text="Doble clic en una celda para editarla  ·  SKU no es editable",
+            self, text="Clic en un producto para ver su ficha completa, editar el texto o cambiar la imagen.",
             bg=WHITE, fg=MUTED, font=("Helvetica", 9),
-        ).pack(anchor="w", pady=(0, 4))
+        ).pack(anchor="w", padx=18, pady=(0, 4))
 
-        # Treeview + scrollbars
-        tree_frame = tk.Frame(body, bg=WHITE)
-        tree_frame.pack(fill="both", expand=True)
+        # ── Área con scroll ─────────────────────────────────────────────────
+        outer = tk.Frame(self, bg=WHITE)
+        outer.pack(fill="both", expand=True, padx=16, pady=(0, 12))
 
-        vsb = ttk.Scrollbar(tree_frame, orient="vertical")
-        hsb = ttk.Scrollbar(tree_frame, orient="horizontal")
+        self._canvas = tk.Canvas(outer, bg=LIGHT, highlightthickness=0)
+        vsb = ttk.Scrollbar(outer, orient="vertical", command=self._canvas.yview)
+        self._canvas.configure(yscrollcommand=vsb.set)
+        self._canvas.pack(side="left", fill="both", expand=True)
         vsb.pack(side="right", fill="y")
-        hsb.pack(side="bottom", fill="x")
 
-        self._tree = ttk.Treeview(
-            tree_frame, columns=_TREE_COLS, show="headings",
-            yscrollcommand=vsb.set, xscrollcommand=hsb.set,
-            selectmode="browse",
-        )
-        vsb.config(command=self._tree.yview)
-        hsb.config(command=self._tree.xview)
-        self._tree.pack(fill="both", expand=True)
+        self._grid_frame = tk.Frame(self._canvas, bg=LIGHT)
+        self._grid_window = self._canvas.create_window((0, 0), window=self._grid_frame, anchor="nw")
 
-        for col, header, width in zip(_TREE_COLS, _TREE_HEADERS, _TREE_WIDTHS):
-            self._tree.heading(col, text=header)
-            anchor = "center" if col in ("sku", "category", "unit_price",
-                                          "box_price", "available") else "w"
-            self._tree.column(col, width=width, anchor=anchor, minwidth=40)
+        self._grid_frame.bind("<Configure>", lambda _e: self._canvas.configure(
+            scrollregion=self._canvas.bbox("all")))
+        self._canvas.bind("<Configure>", self._on_canvas_resize)
+        self._canvas.bind_all("<MouseWheel>", self._on_mousewheel)
 
-        self._tree.bind("<Double-Button-1>", self._on_tree_double_click)
-        self._reload_catalog_tree()
+        self._render_grid()
 
-        # Catalog log
-        tk.Label(body, text="Estado:", bg=WHITE, fg=MUTED,
-                 font=("Helvetica", 9), anchor="w").pack(fill="x", pady=(6, 0))
-        log_wrap2 = tk.Frame(body, bg=WHITE)
-        log_wrap2.pack(fill="x")
-        sb2 = tk.Scrollbar(log_wrap2)
-        sb2.pack(side="right", fill="y")
-        self._cat_log = tk.Text(log_wrap2, height=3, font=("Courier", 9),
-                                 bg=LIGHT, relief="flat", bd=1, wrap="word",
-                                 yscrollcommand=sb2.set, state="disabled")
-        self._cat_log.pack(fill="x", side="left", expand=True)
-        sb2.config(command=self._cat_log.yview)
+    def _on_canvas_resize(self, event):
+        self._canvas.itemconfig(self._grid_window, width=event.width)
+        self._render_grid()
 
-    def _reload_catalog_tree(self):
-        for item in self._tree.get_children():
-            self._tree.delete(item)
-        for p in self._products:
-            self._tree.insert("", "end", values=(
-                p["sku"], p["name"], p["category"],
-                f"${p['unit_price']:.2f}", f"${p['box_price']:.2f}",
-                p["box_contents"], p["available"],
-            ))
+    def _on_mousewheel(self, event):
+        self._canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
 
-    # ── Inline cell editing ───────────────────────────────────────────────────
+    # ── Grid de productos ────────────────────────────────────────────────────
 
-    def _on_tree_double_click(self, event):
-        region = self._tree.identify_region(event.x, event.y)
-        if region != "cell":
-            return
-        col_id  = self._tree.identify_column(event.x)
-        row_id  = self._tree.identify_row(event.y)
-        if not row_id:
-            return
-        col_idx  = int(col_id.lstrip("#")) - 1
-        col_name = _TREE_COLS[col_idx]
-        if col_name == "sku":
+    def _render_grid(self):
+        for w in self._grid_frame.winfo_children():
+            w.destroy()
+
+        query = self._search_var.get().strip().lower()
+        items = [
+            p for p in self._products
+            if not query or query in p["name"].lower() or query in p["sku"]
+        ]
+
+        if not items:
+            tk.Label(
+                self._grid_frame,
+                text="Sin resultados." if query else "No hay productos todavía. Usa '+ Agregar producto'.",
+                bg=LIGHT, fg=MUTED, font=("Helvetica", 10), pady=30,
+            ).grid(row=0, column=0, sticky="w", padx=8)
             return
 
-        bbox = self._tree.bbox(row_id, col_id)
-        if not bbox:
-            return
-        x, y, w, h = bbox
+        canvas_w = max(self._canvas.winfo_width(), CARD_W)
+        cols = max(1, canvas_w // (CARD_W + 16))
 
-        current_vals = self._tree.item(row_id, "values")
-        raw_val = current_vals[col_idx]
-        if col_name in ("unit_price", "box_price"):
-            raw_val = raw_val.lstrip("$")
+        for col in range(cols):
+            self._grid_frame.grid_columnconfigure(col, weight=1)
 
-        if col_name == "category":
-            widget = ttk.Combobox(self._tree, values=CATEGORIES,
-                                   state="readonly", font=("Helvetica", 10))
-            widget.set(raw_val)
-            widget.place(x=x, y=y, width=w, height=h)
-            widget.focus_set()
+        for i, p in enumerate(items):
+            row, col = divmod(i, cols)
+            self._build_card(self._grid_frame, p, row, col)
 
-            def _pick(_event=None):
-                new_val = widget.get()
-                vals = list(current_vals)
-                vals[col_idx] = new_val
-                self._tree.item(row_id, values=vals)
-                self._mark_dirty()
-                widget.destroy()
+    def _build_card(self, parent, product, row, col):
+        card = tk.Frame(parent, bg=CARD_BG, width=CARD_W, height=CARD_H,
+                         highlightbackground=BORDER_C, highlightthickness=1, cursor="hand2")
+        card.grid(row=row, column=col, padx=8, pady=8, sticky="n")
+        card.grid_propagate(False)
+        card.pack_propagate(False)
 
-            widget.bind("<<ComboboxSelected>>", _pick)
-            widget.bind("<Escape>", lambda _: widget.destroy())
-            return
+        img_holder = tk.Frame(card, bg=CARD_BG, width=THUMB_W, height=THUMB_H)
+        img_holder.pack(pady=(10, 6))
+        img_holder.pack_propagate(False)
 
-        if col_name == "available":
-            widget = ttk.Combobox(self._tree, values=["Y", "N"],
-                                   state="readonly", font=("Helvetica", 10))
-            widget.set(raw_val)
-            widget.place(x=x, y=y, width=w, height=h)
-            widget.focus_set()
+        photo = self._get_thumbnail(product["sku"])
+        if photo:
+            img_lbl = tk.Label(img_holder, image=photo, bg=CARD_BG)
+        else:
+            img_lbl = tk.Label(img_holder, text="Sin imagen", bg=LIGHT, fg=MUTED,
+                                font=("Helvetica", 9))
+            img_lbl.pack(fill="both", expand=True)
+        if photo:
+            img_lbl.pack()
 
-            def _pick_av(_event=None):
-                new_val = widget.get()
-                vals = list(current_vals)
-                vals[col_idx] = new_val
-                self._tree.item(row_id, values=vals)
-                self._mark_dirty()
-                widget.destroy()
+        name_lbl = tk.Label(card, text=product["name"] or "(sin nombre)", bg=CARD_BG,
+                             font=("Helvetica", 9, "bold"), wraplength=CARD_W - 16,
+                             justify="center")
+        name_lbl.pack(padx=6)
 
-            widget.bind("<<ComboboxSelected>>", _pick_av)
-            widget.bind("<Escape>", lambda _: widget.destroy())
-            return
+        price_lbl = tk.Label(card, text=f"${product['unit_price']:.2f}", bg=CARD_BG,
+                              fg=BLUE, font=("Helvetica", 9))
+        price_lbl.pack(pady=(2, 0))
 
-        widget = tk.Entry(self._tree, font=("Helvetica", 10))
-        widget.insert(0, raw_val)
-        widget.select_range(0, "end")
-        widget.place(x=x, y=y, width=w, height=h)
-        widget.focus_set()
+        badge_text = "Activo" if product["available"] == "Y" else "Inactivo"
+        badge_fg   = GREEN if product["available"] == "Y" else MUTED
+        tk.Label(card, text=badge_text, bg=CARD_BG, fg=badge_fg,
+                 font=("Helvetica", 8)).pack(pady=(2, 6))
 
-        def _save(_event=None):
-            new_val = widget.get().strip()
-            if col_name in ("unit_price", "box_price"):
-                try:
-                    new_val = f"${float(new_val.replace('$', '').replace(',', '')):.2f}"
-                except ValueError:
-                    widget.destroy()
-                    return
-            vals = list(current_vals)
-            vals[col_idx] = new_val
-            self._tree.item(row_id, values=vals)
-            self._mark_dirty()
-            widget.destroy()
+        for w in (card, img_holder, img_lbl, name_lbl, price_lbl):
+            w.bind("<Button-1>", lambda _e, sku=product["sku"]: self._open_product_dialog(sku))
 
-        widget.bind("<Return>",   _save)
-        widget.bind("<FocusOut>", _save)
-        widget.bind("<Escape>",   lambda _: widget.destroy())
+    def _get_thumbnail(self, sku):
+        if sku in self._thumb_cache:
+            return self._thumb_cache[sku]
+        if not PILLOW_OK:
+            return None
+        images = resolve_images_for_sku(sku)
+        path = images[0] if images else None
+        if not path:
+            return None
+        try:
+            img = Image.open(path)
+            img.thumbnail((THUMB_W, THUMB_H), Image.LANCZOS)
+            photo = ImageTk.PhotoImage(img)
+            self._thumb_cache[sku] = photo
+            return photo
+        except Exception:
+            return None
 
-    def _mark_dirty(self):
-        self._catalog_dirty = True
-        self._dirty_label.config(text="● Cambios sin guardar", fg="#B85C00")
-        self._save_btn.config(state="normal")
+    # ── Diálogo de ficha de producto (crear / editar) ────────────────────────
 
-    def _mark_clean(self):
-        self._catalog_dirty = False
-        self._dirty_label.config(text="✓ Publicado", fg=GREEN)
-        self._save_btn.config(state="disabled")
+    def _open_product_dialog(self, sku):
+        is_new  = sku is None
+        product = None
+        if not is_new:
+            product = next((p for p in self._products if p["sku"] == sku), None)
+            if product is None:
+                return
 
-    def _delete_selected(self):
-        sel = self._tree.selection()
-        if not sel:
-            messagebox.showinfo("Eliminar", "Selecciona un producto primero.")
-            return
-        vals = self._tree.item(sel[0], "values")
-        sku, name = vals[0], vals[1]
-        if not messagebox.askyesno(
-            "Confirmar eliminación",
-            f"¿Eliminar '{name}' (SKU {sku})?\n\n"
-            "El producto dejará de aparecer en el sitio.",
-        ):
-            return
-        self._tree.delete(sel[0])
-        self._mark_dirty()
-
-    def _treeview_to_products(self):
-        products = []
-        for row_id in self._tree.get_children():
-            vals = self._tree.item(row_id, "values")
-            sku, name, category, unit_price, box_price, box_contents, available = vals
-            try:
-                up = round(float(str(unit_price).replace("$", "").replace(",", "")), 2)
-            except ValueError:
-                up = 0.0
-            try:
-                bp = round(float(str(box_price).replace("$", "").replace(",", "")), 2)
-            except ValueError:
-                bp = 0.0
-            products.append({
-                "sku":          str(sku),
-                "name":         str(name),
-                "category":     str(category),
-                "unit_price":   up,
-                "box_price":    bp,
-                "box_contents": str(box_contents),
-                "available":    str(available).strip().upper(),
-            })
-        return products
-
-    # ── New product dialog ────────────────────────────────────────────────────
-
-    def _new_product_dialog(self):
         dlg = tk.Toplevel(self)
-        dlg.title("Nuevo producto")
-        dlg.geometry("380x440")
+        dlg.title("Nuevo producto" if is_new else f"Producto — {product['name']}")
+        dlg.geometry("620x560")
         dlg.resizable(False, False)
         dlg.configure(bg=WHITE)
         dlg.grab_set()
 
+        state = {"images": [], "publishing": False}
+        if not is_new:
+            state["images"] = [{"path": p, "is_new": False}
+                                for p in resolve_images_for_sku(sku)]
+
         body = tk.Frame(dlg, bg=WHITE)
-        body.pack(fill="both", expand=True, padx=22, pady=16)
+        body.pack(fill="both", expand=True, padx=20, pady=16)
+
+        # ── Columna izquierda: fotos (varias por producto) ───────────────────
+        left = tk.Frame(body, bg=WHITE, width=PREVIEW_W + 20)
+        left.pack(side="left", fill="y", padx=(0, 18))
+        left.pack_propagate(False)
+
+        tk.Label(left, text="Fotos del producto", bg=WHITE,
+                 font=("Helvetica", 10, "bold"), anchor="w").pack(fill="x", pady=(0, 2))
+        tk.Label(left, text="La primera es la principal en el sitio. "
+                            "Clic en una miniatura para hacerla principal "
+                            "(igual que las variantes de Floor Cleaner).",
+                 bg=WHITE, fg=MUTED, font=("Helvetica", 8), anchor="w",
+                 wraplength=PREVIEW_W, justify="left").pack(fill="x", pady=(0, 6))
+
+        zone = tk.Frame(left, bg=LIGHT, width=PREVIEW_W, height=PREVIEW_H,
+                         highlightbackground=BLUE, highlightthickness=2, cursor="hand2")
+        zone.pack()
+        zone.pack_propagate(False)
+
+        preview_lbl = tk.Label(zone, bg=LIGHT, cursor="hand2")
+        preview_lbl.pack(fill="both", expand=True)
+
+        thumbs_frame = tk.Frame(left, bg=WHITE)
+        thumbs_frame.pack(fill="x", pady=(8, 0))
+        thumb_photos = []   # referencias vivas para que Tk no las recolecte
+
+        def _set_preview(path):
+            if not PILLOW_OK or not path:
+                preview_lbl.config(image="", text="Sin fotos todavía\nclic para agregar una",
+                                    fg=MUTED, font=("Helvetica", 10))
+                preview_lbl.image = None
+                return
+            try:
+                img = Image.open(path)
+                img.thumbnail((PREVIEW_W, PREVIEW_H), Image.LANCZOS)
+                photo = ImageTk.PhotoImage(img)
+                preview_lbl.image = photo   # referencia viva
+                preview_lbl.config(image=photo, text="")
+            except Exception:
+                preview_lbl.config(image="", text="No se pudo\nleer la imagen",
+                                    fg=RED, font=("Helvetica", 10))
+
+        def _make_thumb_photo(path):
+            if not PILLOW_OK:
+                return None
+            try:
+                img = Image.open(path)
+                img.thumbnail((56, 44), Image.LANCZOS)
+                return ImageTk.PhotoImage(img)
+            except Exception:
+                return None
+
+        def _make_primary(i):
+            if i == 0:
+                return
+            state["images"].insert(0, state["images"].pop(i))
+            _refresh_gallery()
+
+        def _remove_image(i):
+            state["images"].pop(i)
+            _refresh_gallery()
+
+        def _refresh_gallery():
+            thumb_photos.clear()
+            for w in thumbs_frame.winfo_children():
+                w.destroy()
+            _set_preview(state["images"][0]["path"] if state["images"] else None)
+            for idx, item in enumerate(state["images"]):
+                cell = tk.Frame(thumbs_frame, bg=WHITE)
+                cell.pack(side="left", padx=(0, 6))
+                photo = _make_thumb_photo(item["path"])
+                if photo:
+                    thumb_photos.append(photo)
+                    thumb_lbl = tk.Label(
+                        cell, image=photo, bg=WHITE, cursor="hand2",
+                        highlightthickness=2,
+                        highlightbackground=BLUE if idx == 0 else BORDER_C,
+                    )
+                else:
+                    thumb_lbl = tk.Label(cell, text="?", bg=LIGHT, width=8, height=3,
+                                         cursor="hand2")
+                thumb_lbl.pack()
+                thumb_lbl.bind("<Button-1>", lambda _e, i=idx: _make_primary(i))
+                tk.Label(
+                    cell, text=("Principal" if idx == 0 else "Hacer principal"),
+                    bg=WHITE, fg=(GREEN if idx == 0 else BLUE), cursor="hand2",
+                    font=("Helvetica", 7),
+                ).pack()
+                rm_lbl = tk.Label(cell, text="Quitar", bg=WHITE, fg=RED, cursor="hand2",
+                                   font=("Helvetica", 7, "underline"))
+                rm_lbl.pack()
+                rm_lbl.bind("<Button-1>", lambda _e, i=idx: _remove_image(i))
+
+        def _add_images():
+            paths = filedialog.askopenfilenames(
+                title="Seleccionar imagen(es) del producto",
+                filetypes=[
+                    ("Imágenes", "*.jpg *.jpeg *.png *.webp *.heic *.bmp *.tiff *.tif"),
+                    ("Todos los archivos", "*.*"),
+                ],
+            )
+            if not paths:
+                return
+            for raw in paths:
+                p = Path(raw)
+                if p.suffix.lower() not in ACCEPTED_EXTS:
+                    messagebox.showerror(
+                        "Formato no compatible",
+                        f"'{p.name}' no es compatible.\nUsa: JPG, PNG, WEBP, HEIC, BMP o TIFF.",
+                    )
+                    continue
+                state["images"].append({"path": p, "is_new": True})
+            _refresh_gallery()
+
+        zone.bind("<Button-1>", lambda _e: _add_images())
+        preview_lbl.bind("<Button-1>", lambda _e: _add_images())
+        tk.Button(left, text="+ Agregar imagen", command=_add_images,
+                  bg=LIGHT, fg=BLUE, relief="flat", bd=1, cursor="hand2",
+                  font=("Helvetica", 9), pady=4).pack(fill="x", pady=(8, 0))
+
+        _refresh_gallery()
+
+        # ── Columna derecha: campos de texto ─────────────────────────────────
+        right = tk.Frame(body, bg=WHITE)
+        right.pack(side="left", fill="both", expand=True)
 
         fields = {}
 
         def _field(label, key, default="", combo_opts=None):
-            tk.Label(body, text=label, bg=WHITE,
+            tk.Label(right, text=label, bg=WHITE,
                      font=("Helvetica", 10, "bold"), anchor="w").pack(fill="x")
             var = tk.StringVar(value=default)
             if combo_opts:
-                w = ttk.Combobox(body, textvariable=var, values=combo_opts,
+                w = ttk.Combobox(right, textvariable=var, values=combo_opts,
                                   state="readonly", font=("Helvetica", 10))
             else:
-                w = tk.Entry(body, textvariable=var, font=("Helvetica", 10))
-            w.pack(fill="x", pady=(2, 8))
+                w = tk.Entry(right, textvariable=var, font=("Helvetica", 10))
+            w.pack(fill="x", pady=(2, 10))
             fields[key] = var
             return w
 
-        sku_entry = _field("SKU  *", "sku")
-        sku_entry.focus_set()
-        _field("Nombre del producto  *", "name")
-        _field("Categoría  *", "category", "Cleaning", CATEGORIES)
-        _field("Precio unitario ($)  *", "unit_price", "0.00")
-        _field("Precio por caja ($)  *", "box_price",  "0.00")
-        _field("Contenido por caja  *", "box_contents", "12 Units/Box")
-        _field("Activo (Y/N)", "available", "Y", ["Y", "N"])
+        if is_new:
+            sku_entry = _field("SKU  *", "sku")
+            sku_entry.focus_set()
+        else:
+            tk.Label(right, text="SKU", bg=WHITE, font=("Helvetica", 10, "bold"),
+                     anchor="w").pack(fill="x")
+            tk.Label(right, text=product["sku"], bg=WHITE, fg=MUTED,
+                     font=("Helvetica", 10), anchor="w").pack(fill="x", pady=(2, 10))
+            fields["sku"] = tk.StringVar(value=product["sku"])
 
-        err = tk.Label(body, text="", bg=WHITE, fg="red", font=("Helvetica", 9))
-        err.pack(fill="x")
+        _field("Nombre del producto  *", "name", product["name"] if product else "")
+        _field("Categoría  *", "category",
+               product["category"] if product else "Cleaning", CATEGORIES)
+        _field("Precio unitario ($)  *", "unit_price",
+               f"{product['unit_price']:.2f}" if product else "0.00")
+        _field("Precio por caja ($)  *", "box_price",
+               f"{product['box_price']:.2f}" if product else "0.00")
+        _field("Contenido por caja  *", "box_contents",
+               product["box_contents"] if product else "12 Units/Box")
+        _field("Activo (Y/N)", "available",
+               product["available"] if product else "Y", ["Y", "N"])
 
-        def _save():
+        err_lbl = tk.Label(right, text="", bg=WHITE, fg=RED, font=("Helvetica", 9),
+                            wraplength=320, justify="left")
+        err_lbl.pack(fill="x")
+
+        log_wrap = tk.Frame(right, bg=WHITE)
+        log_wrap.pack(fill="x", pady=(6, 0))
+        log_txt = tk.Text(log_wrap, height=4, font=("Courier", 9), bg=LIGHT,
+                           relief="flat", bd=1, wrap="word", state="disabled")
+        log_txt.pack(fill="x")
+
+        def _log(msg):
+            def _do():
+                log_txt.config(state="normal")
+                log_txt.insert("end", msg + "\n")
+                log_txt.see("end")
+                log_txt.config(state="disabled")
+            dlg.after(0, _do)
+
+        # ── Botonera ──────────────────────────────────────────────────────────
+        btn_row = tk.Frame(dlg, bg=WHITE)
+        btn_row.pack(fill="x", side="bottom", padx=20, pady=(0, 16))
+
+        save_btn = tk.Button(
+            btn_row, text="Guardar y Publicar",
+            bg=GREEN, fg=WHITE, relief="flat", bd=0, cursor="hand2",
+            font=("Helvetica", 10, "bold"), padx=14, pady=7,
+        )
+        save_btn.pack(side="right")
+
+        tk.Button(btn_row, text="Cancelar", command=dlg.destroy,
+                  bg=LIGHT, fg=MUTED, relief="flat", bd=1, cursor="hand2",
+                  font=("Helvetica", 10), padx=12, pady=7).pack(side="right", padx=(0, 8))
+
+        if not is_new:
+            tk.Button(
+                btn_row, text="Eliminar producto",
+                command=lambda: self._confirm_delete(dlg, product, _log, save_btn),
+                bg=WHITE, fg=RED, relief="flat", bd=1, cursor="hand2",
+                font=("Helvetica", 10), padx=12, pady=7,
+            ).pack(side="left")
+
+        def _collect_and_validate():
             data = {k: v.get().strip() for k, v in fields.items()}
             if not data["sku"]:
-                err.config(text="El SKU es obligatorio.")
-                return
+                err_lbl.config(text="El SKU es obligatorio.")
+                return None
             if not data["name"]:
-                err.config(text="El nombre es obligatorio.")
-                return
-            existing_skus = [self._tree.item(r, "values")[0]
-                             for r in self._tree.get_children()]
-            if data["sku"] in existing_skus:
-                err.config(text=f"El SKU '{data['sku']}' ya existe.")
-                return
+                err_lbl.config(text="El nombre es obligatorio.")
+                return None
+            if is_new and any(p["sku"] == data["sku"] for p in self._products):
+                err_lbl.config(text=f"El SKU '{data['sku']}' ya existe.")
+                return None
             try:
-                up = round(float(data["unit_price"]), 2)
-                bp = round(float(data["box_price"]), 2)
+                up = round(float(data["unit_price"].replace("$", "").replace(",", "")), 2)
+                bp = round(float(data["box_price"].replace("$", "").replace(",", "")), 2)
             except ValueError:
-                err.config(text="Los precios deben ser números (ej: 1.99).")
+                err_lbl.config(text="Los precios deben ser números (ej: 1.99).")
+                return None
+            err_lbl.config(text="")
+            return {
+                "sku":          data["sku"],
+                "name":         data["name"],
+                "category":     data["category"] or "Cleaning",
+                "unit_price":   up,
+                "box_price":    bp,
+                "box_contents": data["box_contents"],
+                "available":    data["available"] or "Y",
+            }
+
+        def _on_save():
+            if state["publishing"]:
                 return
-            self._tree.insert("", "end", values=(
-                data["sku"], data["name"], data["category"],
-                f"${up:.2f}", f"${bp:.2f}",
-                data["box_contents"], data["available"],
-            ))
-            self._mark_dirty()
-            dlg.destroy()
+            new_data = _collect_and_validate()
+            if new_data is None:
+                return
+            state["publishing"] = True
+            save_btn.config(state="disabled", text="Publicando...")
+            threading.Thread(
+                target=self._publish_product_worker,
+                args=(new_data, list(state["images"]), is_new, sku, dlg, state, save_btn, _log),
+                daemon=True,
+            ).start()
 
-        btn_row = tk.Frame(body, bg=WHITE)
-        btn_row.pack(fill="x", pady=(4, 0))
-        tk.Button(btn_row, text="Cancelar", command=dlg.destroy,
-                  font=("Helvetica", 10), relief="flat", bg=LIGHT,
-                  cursor="hand2").pack(side="right", padx=(6, 0))
-        tk.Button(btn_row, text="Agregar", command=_save,
-                  font=("Helvetica", 10, "bold"), relief="flat",
-                  bg=BLUE, fg=WHITE, cursor="hand2").pack(side="right")
+        save_btn.config(command=_on_save)
+        dlg.bind("<Return>", lambda _e: _on_save())
 
-        dlg.bind("<Return>", lambda _: _save())
-
-    # ── Catalog publish ───────────────────────────────────────────────────────
-
-    def _publish_catalog(self):
-        if self._publishing:
+    def _confirm_delete(self, dlg, product, _log, save_btn):
+        if not messagebox.askyesno(
+            "Confirmar eliminación",
+            f"¿Eliminar '{product['name']}' (SKU {product['sku']})?\n\n"
+            "El producto dejará de aparecer en el sitio.",
+            parent=dlg,
+        ):
             return
-        self._publishing = True
-        self._save_btn.config(state="disabled", text="Publicando...")
-        self._cat_log_clear()
-        products = self._treeview_to_products()
-        threading.Thread(target=self._publish_catalog_worker,
-                         args=(products,), daemon=True).start()
+        save_btn.config(state="disabled")
+        threading.Thread(
+            target=self._delete_product_worker,
+            args=(product["sku"], dlg, _log),
+            daemon=True,
+        ).start()
 
-    def _publish_catalog_worker(self, products):
+    # ── Workers (hilo de fondo) ───────────────────────────────────────────────
+
+    def _git_sync_and_commit(self, paths, commit_msg, _log):
+        branch = self._current_branch()
+        _log("Sincronizando con GitHub...")
+        pull = subprocess.run(
+            ["git", "pull", "--rebase", "origin", branch],
+            capture_output=True, text=True, cwd=str(REPO_ROOT),
+        )
+        if pull.returncode != 0:
+            subprocess.run(["git", "rebase", "--abort"],
+                           capture_output=True, cwd=str(REPO_ROOT))
+            _log(f"  (aviso sync: {pull.stderr.strip()[:80]})")
+
+        subprocess.run(["git", "add", *paths], capture_output=True,
+                       cwd=str(REPO_ROOT), check=True)
+        commit = subprocess.run(
+            ["git", "commit", "-m", commit_msg],
+            capture_output=True, text=True, cwd=str(REPO_ROOT),
+        )
+        commit_out = (commit.stdout + commit.stderr).lower()
+        if commit.returncode != 0 and "nothing to commit" not in commit_out:
+            raise RuntimeError(f"git commit falló:\n{commit.stderr}")
+        _log("✓ Commit creado")
+
+        push = subprocess.run(
+            ["git", "push", "origin", branch],
+            capture_output=True, text=True, cwd=str(REPO_ROOT),
+        )
+        if push.returncode != 0:
+            raise RuntimeError(
+                "Sin conexión a internet. Los cambios se guardaron localmente.\n"
+                "Intenta publicar de nuevo cuando tengas conexión.\n\n"
+                f"Detalle:\n{push.stderr.strip()[:200]}"
+            )
+        _log(f"✓ ¡Publicado! → {SITE_URL}")
+
+    def _publish_product_worker(self, data, images, is_new, old_sku, dlg, state, save_btn, _log):
         try:
-            self._cat_log_write("Guardando Excel...")
-            self._write_excel_products(products)
-            self._cat_log_write("✓ products.xlsx actualizado")
+            changed_paths = ["data/products.json", "data/product-images.json"]
 
-            self._cat_log_write("Regenerando catálogo JSON...")
+            final_paths = []
+            if images:
+                IMG_DIR.mkdir(parents=True, exist_ok=True)
+                count = len(images)
+                for idx, item in enumerate(images):
+                    if not item["is_new"]:
+                        final_paths.append(item["path"])
+                        continue
+                    if not PILLOW_OK:
+                        raise RuntimeError("Pillow no está instalado.\nCorre tools/setup.bat primero.")
+                    name = f"{data['sku']}.jpg" if count == 1 else f"{data['sku']}-{idx + 1}.jpg"
+                    dest = IMG_DIR / name
+                    _log(f"Convirtiendo {item['path'].name} a JPG...")
+                    img = Image.open(item["path"])
+                    if img.mode in ("RGBA", "LA", "P"):
+                        background = Image.new("RGB", img.size, (234, 240, 255))
+                        if img.mode == "P":
+                            img = img.convert("RGBA")
+                        if img.mode in ("RGBA", "LA"):
+                            background.paste(img, mask=img.getchannel("A"))
+                        else:
+                            background.paste(img)
+                        img = background
+                    elif img.mode != "RGB":
+                        img = img.convert("RGB")
+                    img.save(dest, "JPEG", quality=90)
+                    changed_paths.append(dest.relative_to(REPO_ROOT).as_posix())
+                    final_paths.append(dest)
+                    _log(f"✓ Guardada como {name}")
+                self._thumb_cache.pop(data["sku"], None)
+
+            overrides = load_image_overrides()
+            if final_paths:
+                overrides[data["sku"]] = [p.relative_to(REPO_ROOT).as_posix() for p in final_paths]
+            else:
+                overrides.pop(data["sku"], None)
+            save_image_overrides(overrides)
+
+            if is_new:
+                self._products.append(data)
+            else:
+                for i, p in enumerate(self._products):
+                    if p["sku"] == old_sku:
+                        self._products[i] = data
+                        break
+
+            _log("Guardando Excel...")
+            self._write_excel_products(self._products)
+            _log("✓ products.xlsx actualizado")
+
+            _log("Regenerando catálogo JSON...")
             r = subprocess.run(
                 [sys.executable, str(GENERATE_SCRIPT)],
                 capture_output=True, text=True, cwd=str(REPO_ROOT),
             )
             if r.returncode != 0:
                 raise RuntimeError(f"generate-products.py falló:\n{r.stderr or r.stdout}")
-            self._cat_log_write("✓ products.json actualizado")
+            _log("✓ products.json actualizado")
 
-            self._cat_log_write("Sincronizando con GitHub...")
-            pull = subprocess.run(
-                ["git", "pull", "--rebase", "origin", "main"],
-                capture_output=True, text=True, cwd=str(REPO_ROOT),
-            )
-            if pull.returncode != 0:
-                subprocess.run(["git", "rebase", "--abort"],
-                               capture_output=True, cwd=str(REPO_ROOT))
-                self._cat_log_write(f"  (aviso sync: {pull.stderr.strip()[:80]})")
+            commit_msg = (f"feat: agregar producto {data['sku']}" if is_new
+                          else f"feat: actualizar producto {data['sku']}")
+            self._git_sync_and_commit(changed_paths, commit_msg, _log)
 
-            subprocess.run(
-                ["git", "add", "data/products.json"],
-                capture_output=True, cwd=str(REPO_ROOT), check=True,
-            )
-            commit = subprocess.run(
-                ["git", "commit", "-m", "feat: actualizar catálogo de productos"],
-                capture_output=True, text=True, cwd=str(REPO_ROOT),
-            )
-            commit_out = (commit.stdout + commit.stderr).lower()
-            if commit.returncode != 0 and "nothing to commit" not in commit_out:
-                raise RuntimeError(f"git commit falló:\n{commit.stderr}")
-            self._cat_log_write("✓ Commit creado")
-
-            push = subprocess.run(
-                ["git", "push", "origin", "main"],
-                capture_output=True, text=True, cwd=str(REPO_ROOT),
-            )
-            if push.returncode != 0:
-                raise RuntimeError(
-                    "Sin conexión a internet. El catálogo se guardó localmente.\n"
-                    "Intenta publicar de nuevo cuando tengas conexión.\n\n"
-                    f"Detalle:\n{push.stderr.strip()[:200]}"
-                )
-
-            self._cat_log_write(f"✓ ¡Publicado! → {SITE_URL}")
-            self.after(0, self._on_catalog_success, products)
+            self.after(0, self._on_product_success, dlg)
 
         except FileNotFoundError as exc:
-            if "git" in str(exc).lower():
-                msg = (
-                    "Git no está instalado en este equipo.\n\n"
-                    "Descarga e instala Git para Windows (git-scm.com)\n"
-                    "y reinicia la app.\n\nContacta a Samuel:\n+57 304 353 8450"
-                )
-            else:
-                msg = f"Archivo no encontrado:\n{exc}"
-            self.after(0, self._on_catalog_error, msg)
+            msg = self._git_not_found_msg(exc)
+            self.after(0, self._on_product_error, msg, state, save_btn)
         except Exception as exc:
-            self.after(0, self._on_catalog_error, str(exc))
+            self.after(0, self._on_product_error, str(exc), state, save_btn)
 
-    def _on_catalog_success(self, products):
-        self._publishing = False
-        self._products = products
-        self._update_combo()
-        self._save_btn.config(text="Guardar y Publicar")
-        self._mark_clean()
+    def _delete_product_worker(self, sku, dlg, _log):
+        try:
+            self._products = [p for p in self._products if p["sku"] != sku]
+
+            overrides = load_image_overrides()
+            if sku in overrides:
+                del overrides[sku]
+                save_image_overrides(overrides)
+            self._thumb_cache.pop(sku, None)
+
+            _log("Guardando Excel...")
+            self._write_excel_products(self._products)
+            _log("✓ products.xlsx actualizado")
+
+            _log("Regenerando catálogo JSON...")
+            r = subprocess.run(
+                [sys.executable, str(GENERATE_SCRIPT)],
+                capture_output=True, text=True, cwd=str(REPO_ROOT),
+            )
+            if r.returncode != 0:
+                raise RuntimeError(f"generate-products.py falló:\n{r.stderr or r.stdout}")
+            _log("✓ products.json actualizado")
+
+            self._git_sync_and_commit(
+                ["data/products.json", "data/product-images.json"],
+                f"fix: eliminar producto {sku}", _log,
+            )
+            self.after(0, self._on_product_success, dlg)
+
+        except FileNotFoundError as exc:
+            msg = self._git_not_found_msg(exc)
+            self.after(0, self._on_product_error, msg, {"publishing": False}, None)
+        except Exception as exc:
+            self.after(0, self._on_product_error, str(exc), {"publishing": False}, None)
+
+    def _git_not_found_msg(self, exc):
+        if "git" in str(exc).lower():
+            return (
+                "Git no está instalado en este equipo.\n\n"
+                "Descarga e instala Git para Windows (git-scm.com)\n"
+                "y reinicia la app.\n\nContacta a Samuel:\n+57 304 353 8450"
+            )
+        return f"Archivo no encontrado:\n{exc}"
+
+    def _on_product_success(self, dlg):
+        self._render_grid()
+        try:
+            dlg.destroy()
+        except tk.TclError:
+            pass
         messagebox.showinfo(
-            "¡Catálogo publicado!",
+            "¡Publicado!",
             f"Los cambios están en línea.\n\nEl sitio se actualiza en 1-2 minutos:\n{SITE_URL}",
         )
 
-    def _on_catalog_error(self, msg):
-        self._publishing = False
-        self._save_btn.config(text="Guardar y Publicar", state="normal")
-        self._cat_log_write(f"\n✗ Error: {msg}")
-        messagebox.showerror("Error al publicar catálogo", msg)
-
-    # ── Images tab helpers ────────────────────────────────────────────────────
-
-    def _update_combo(self):
-        self._combo.config(
-            values=[f"{p['sku']}{SEP}{p['name']}" for p in self._products]
-        )
-
-    def _selected_sku(self):
-        v = self._combo_var.get()
-        return v.split(SEP)[0].strip() if v else None
-
-    def _selected_name(self):
-        v = self._combo_var.get()
-        parts = v.split(SEP, 1)
-        return parts[1].strip() if len(parts) > 1 else ""
-
-    def _refresh_images(self):
-        sku = self._selected_sku()
-        if sku and self._image_path:
-            self._dest_label.config(text=f"  Destino:  img/productos/{sku}.jpg")
-        elif sku:
-            self._dest_label.config(text=f"  Producto: {sku} — falta la imagen")
-        else:
-            self._dest_label.config(text="")
-        self._btn.config(state="normal" if (sku and self._image_path) else "disabled")
-
-    def _browse(self):
-        path = filedialog.askopenfilename(
-            title="Seleccionar imagen del producto",
-            filetypes=[
-                ("Imágenes", "*.jpg *.jpeg *.png *.webp *.heic *.bmp *.tiff *.tif"),
-                ("Todos los archivos", "*.*"),
-            ],
-        )
-        if not path:
-            return
-        p = Path(path)
-        if p.suffix.lower() not in ACCEPTED_EXTS:
-            messagebox.showerror(
-                "Formato no compatible",
-                f"'{p.name}' no es compatible.\n"
-                "Usa: JPG, PNG, WEBP, HEIC, BMP o TIFF.",
-            )
-            return
-        self._image_path = p
-        self._zone_text.config(text="Clic para cambiar imagen", pady=6)
-        self._zone_fname.config(text=p.name)
-        self._show_preview(p)
-        self._refresh_images()
-
-    def _show_preview(self, path: Path):
-        if not PILLOW_OK:
-            return
-        try:
-            img = Image.open(path)
-            img.thumbnail((130, 90), Image.LANCZOS)
-            self._preview_photo = ImageTk.PhotoImage(img)
-            self._zone_preview.config(image=self._preview_photo)
-        except Exception:
-            pass
-
-    # ── Image publish ─────────────────────────────────────────────────────────
-
-    def _publish_image(self):
-        if self._publishing:
-            return
-        self._publishing = True
-        self._btn.config(state="disabled", text="Publicando...")
-        self._log_clear()
-        threading.Thread(target=self._publish_image_worker, daemon=True).start()
-
-    def _publish_image_worker(self):
-        sku  = self._selected_sku()
-        name = self._selected_name()
-        src  = self._image_path
-
-        try:
-            if not src or not src.exists():
-                raise RuntimeError(
-                    f"El archivo de imagen ya no existe:\n{src}\n\n"
-                    "Selecciona la imagen de nuevo."
-                )
-            IMG_DIR.mkdir(parents=True, exist_ok=True)
-            if not PILLOW_OK:
-                raise RuntimeError(
-                    "Pillow no está instalado.\nCorre tools/setup.bat primero."
-                )
-
-            dest = IMG_DIR / f"{sku}.jpg"
-            self._log_write("Convirtiendo imagen a JPG...")
-            img = Image.open(src)
-            if img.mode in ("RGBA", "LA", "P"):
-                background = Image.new("RGB", img.size, (234, 240, 255))
-                if img.mode == "P":
-                    img = img.convert("RGBA")
-                if img.mode in ("RGBA", "LA"):
-                    background.paste(img, mask=img.getchannel("A"))
-                else:
-                    background.paste(img)
-                img = background
-            elif img.mode != "RGB":
-                img = img.convert("RGB")
-            img.save(dest, "JPEG", quality=90)
-            self._log_write(f"✓ Guardada como {sku}.jpg")
-
-            self._log_write("Regenerando catálogo de productos...")
-            r = subprocess.run(
-                [sys.executable, str(GENERATE_SCRIPT)],
-                capture_output=True, text=True, cwd=str(REPO_ROOT),
-            )
-            if r.returncode != 0:
-                raise RuntimeError(f"generate-products.py falló:\n{r.stderr or r.stdout}")
-            self._log_write("✓ products.json actualizado")
-
-            self._log_write("Sincronizando con GitHub...")
-            pull = subprocess.run(
-                ["git", "pull", "--rebase", "origin", "master"],
-                capture_output=True, text=True, cwd=str(REPO_ROOT),
-            )
-            if pull.returncode != 0:
-                subprocess.run(["git", "rebase", "--abort"],
-                               capture_output=True, cwd=str(REPO_ROOT))
-                self._log_write(f"  (aviso sync: {pull.stderr.strip()[:80]})")
-
-            img_rel = dest.relative_to(REPO_ROOT).as_posix()
-            subprocess.run(
-                ["git", "add", img_rel, "data/products.json"],
-                capture_output=True, cwd=str(REPO_ROOT), check=True,
-            )
-            commit = subprocess.run(
-                ["git", "commit", "-m", f"feat: imagen {sku} - {name}"],
-                capture_output=True, text=True, cwd=str(REPO_ROOT),
-            )
-            commit_out = (commit.stdout + commit.stderr).lower()
-            if commit.returncode != 0 and "nothing to commit" not in commit_out:
-                raise RuntimeError(f"git commit falló:\n{commit.stderr}")
-            self._log_write("✓ Commit creado")
-
-            self._log_write("Subiendo a GitHub...")
-            push = subprocess.run(
-                ["git", "push", "origin", "master"],
-                capture_output=True, text=True, cwd=str(REPO_ROOT),
-            )
-            if push.returncode != 0:
-                raise RuntimeError(
-                    "Sin conexión a internet. La imagen se guardó localmente.\n"
-                    "Intenta publicar de nuevo cuando tengas conexión.\n\n"
-                    f"Detalle:\n{push.stderr.strip()[:200]}"
-                )
-
-            self._log_write(f"✓ ¡Publicado! → {SITE_URL}")
-            self.after(0, self._on_image_success, name)
-
-        except FileNotFoundError as exc:
-            if "git" in str(exc).lower():
-                msg = (
-                    "Git no está instalado en este equipo.\n\n"
-                    "1. Descarga Git desde git-scm.com\n"
-                    "2. Instala con opciones predeterminadas\n"
-                    "3. Reinicia la app\n\nContacta a Samuel:\n+57 304 353 8450"
-                )
-            else:
-                msg = f"Archivo no encontrado:\n{exc}"
-            self.after(0, self._on_image_error, msg)
-        except Exception as exc:
-            self.after(0, self._on_image_error, str(exc))
-
-    def _on_image_success(self, product_name):
-        self._publishing    = False
-        self._image_path    = None
-        self._preview_photo = None
-        self._zone_text.config(
-            text="Haz clic aquí para seleccionar la imagen\n"
-                 "JPG  ·  PNG  ·  WEBP  ·  HEIC  ·  BMP  ·  TIFF",
-            pady=22,
-        )
-        self._zone_preview.config(image="")
-        self._zone_fname.config(text="")
-        self._btn.config(text="Publicar en el sitio", bg=BLUE)
-        self._refresh_images()
-        messagebox.showinfo(
-            "¡Publicado correctamente!",
-            f"La imagen de '{product_name}' está en línea.\n\n"
-            f"El sitio se actualiza en 1-2 minutos:\n{SITE_URL}",
-        )
-
-    def _on_image_error(self, msg):
-        self._publishing = False
-        self._log_write(f"\n✗ Error: {msg}")
-        self._btn.config(text="Publicar en el sitio", bg=BLUE)
-        self._refresh_images()
+    def _on_product_error(self, msg, state, save_btn):
+        state["publishing"] = False
+        if save_btn is not None:
+            try:
+                save_btn.config(state="normal", text="Guardar y Publicar")
+            except tk.TclError:
+                pass
         messagebox.showerror("Error al publicar", msg)
-
-    # ── Log helpers ───────────────────────────────────────────────────────────
-
-    def _log_write(self, msg):
-        def _do():
-            self._log.config(state="normal")
-            self._log.insert("end", msg + "\n")
-            self._log.see("end")
-            self._log.config(state="disabled")
-        self.after(0, _do)
-
-    def _log_clear(self):
-        self._log.config(state="normal")
-        self._log.delete("1.0", "end")
-        self._log.config(state="disabled")
-
-    def _cat_log_write(self, msg):
-        def _do():
-            self._cat_log.config(state="normal")
-            self._cat_log.insert("end", msg + "\n")
-            self._cat_log.see("end")
-            self._cat_log.config(state="disabled")
-        self.after(0, _do)
-
-    def _cat_log_clear(self):
-        self._cat_log.config(state="normal")
-        self._cat_log.delete("1.0", "end")
-        self._cat_log.config(state="disabled")
 
     # ── Menu handlers ─────────────────────────────────────────────────────────
 
@@ -928,10 +870,13 @@ class ImageManagerApp(tk.Tk):
         if not imgs:
             messagebox.showinfo("Imágenes", "No hay imágenes en img/productos/")
             return
-        sku_set = {p["sku"] for p in self._products}
+        used_names = set()
+        for p in self._products:
+            for path in resolve_images_for_sku(p["sku"]):
+                used_names.add(path.name)
         lines = [
-            ("✓" if i.stem in sku_set else "○") + f"  {i.name}"
-            + ("  ← activo" if i.stem in sku_set else "")
+            ("✓" if i.name in used_names else "○") + f"  {i.name}"
+            + ("  ← activo" if i.name in used_names else "")
             for i in imgs
         ]
         win = tk.Toplevel(self)
@@ -939,7 +884,7 @@ class ImageManagerApp(tk.Tk):
         win.geometry("440x300")
         win.configure(bg=WHITE)
         tk.Label(win,
-                 text="✓ = asignada a un SKU activo   ○ = no usada por ningún producto",
+                 text="✓ = asignada a un producto activo   ○ = no usada por ningún producto",
                  bg=WHITE, fg=MUTED, font=("Helvetica", 9)).pack(anchor="w", padx=12, pady=(10, 4))
         t = tk.Text(win, font=("Courier", 9), bg=LIGHT, wrap="none")
         t.pack(fill="both", expand=True, padx=12, pady=(0, 12))
@@ -1024,4 +969,3 @@ class ImageManagerApp(tk.Tk):
 if __name__ == "__main__":
     app = ImageManagerApp()
     app.mainloop()
-
