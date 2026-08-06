@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-06T17:04:32Z",
+  "generated": "2026-08-06T17:04:49Z",
   "total": 11,
   "categories": [
     "Cleaning",
@@ -166,7 +166,7 @@
       "boxPrice": 38.0,
       "boxPriceCents": 3800,
       "boxContents": "10 Packs/Box",
-      "image": "img/productos/garbage-bag.png",
+      "image": "img/productos/7907173.jpg",
       "imageSource": "product-images.json",
       "available": true
     }
