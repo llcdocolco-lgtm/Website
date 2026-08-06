@@ -1,6 +1,6 @@
 {
-  "generated": "2026-08-06T01:30:32Z",
-  "total": 11,
+  "generated": "2026-08-06T01:47:25Z",
+  "total": 10,
   "categories": [
     "Cleaning",
     "Packaging",
@@ -97,13 +97,13 @@
       "name": "Dishwashing Liquid 0.5L",
       "category": "cleaning",
       "categoryLabel": "Cleaning",
-      "unitPrice": 1.48,
-      "unitCents": 148,
-      "boxPrice": 14.8,
-      "boxPriceCents": 1480,
+      "unitPrice": 1.78,
+      "unitCents": 178,
+      "boxPrice": 33.6,
+      "boxPriceCents": 3360,
       "boxContents": "24 Units/Box",
       "image": "img/productos/dishwashing-liquid.png",
-      "imageSource": "map -> dishwashing-liquid.png",
+      "imageSource": "product-images.json",
       "available": true
     },
     {
@@ -136,24 +136,6 @@
       "images": [
         "img/productos/floor-cleaner-pomegranate.png",
         "img/productos/761727.png"
-      ]
-    },
-    {
-      "id": "761741",
-      "name": "Floor Cleaner Lime Pomegranate 4L",
-      "category": "cleaning",
-      "categoryLabel": "Cleaning",
-      "unitPrice": 4.68,
-      "unitCents": 468,
-      "boxPrice": 46.8,
-      "boxPriceCents": 4680,
-      "boxContents": "4 Units/Box",
-      "image": "img/productos/761741.png",
-      "imageSource": "product-images.json",
-      "available": true,
-      "images": [
-        "img/productos/761741.png",
-        "img/productos/761734.png"
       ]
     },
     {
