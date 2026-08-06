@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-06T20:11:16Z",
+  "generated": "2026-08-06T20:12:40Z",
   "total": 11,
   "categories": [
     "Cleaning",
@@ -29,8 +29,8 @@
       "categoryLabel": "Packaging",
       "unitPrice": 3.1,
       "unitCents": 310,
-      "boxPrice": 31.0,
-      "boxPriceCents": 3100,
+      "boxPrice": 86.8,
+      "boxPriceCents": 8680,
       "boxContents": "28 Rolls/Box",
       "image": "img/productos/3870541.jpg",
       "imageSource": "product-images.json",
