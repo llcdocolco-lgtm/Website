@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-06T02:12:06Z",
+  "generated": "2026-08-06T03:17:50Z",
   "total": 11,
   "categories": [
     "Cleaning",
@@ -15,11 +15,11 @@
       "categoryLabel": "Protection",
       "unitPrice": 1.65,
       "unitCents": 165,
-      "boxPrice": 16.5,
-      "boxPriceCents": 1650,
+      "boxPrice": 237.6,
+      "boxPriceCents": 23760,
       "boxContents": "12 Dozens",
       "image": "img/productos/3870540.png",
-      "imageSource": "SKU file",
+      "imageSource": "product-images.json",
       "available": true
     },
     {
