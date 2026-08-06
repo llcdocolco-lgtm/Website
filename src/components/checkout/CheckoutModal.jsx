@@ -22,7 +22,7 @@ export default function CheckoutModal({ open, onClose }) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          cart:          items.map(i => ({ id: i.id, qty: i.qty })),
+          cart:          items.map(i => ({ id: i.id, qty: i.qty, variant: i.variant || undefined })),
           customerName:  name,
           customerEmail: email,
           customerPhone: phone,
@@ -62,8 +62,8 @@ export default function CheckoutModal({ open, onClose }) {
 
             <div className="checkout-summary">
               {items.map(i => (
-                <div key={i.id} className="checkout-item">
-                  <span>{i.name} × {i.qty}</span>
+                <div key={i.cartKey} className="checkout-item">
+                  <span>{i.name}{i.variant ? ` — ${i.variant}` : ''} × {i.qty}</span>
                   <span>${(i.boxPrice * i.qty).toFixed(2)}</span>
                 </div>
               ))}

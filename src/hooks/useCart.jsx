@@ -16,25 +16,27 @@ export function CartProvider({ children }) {
     sessionStorage.setItem('docolco_cart', JSON.stringify(items))
   }, [items])
 
-  function addItem(product) {
+  function addItem(product, selection = {}) {
+    const { image = product.image, variant = null } = selection
+    const cartKey = variant ? `${product.id}::${variant}` : String(product.id)
     setItems(prev => {
-      const existing = prev.find(i => i.id === product.id)
+      const existing = prev.find(i => i.cartKey === cartKey)
       if (existing) {
         return prev.map(i =>
-          i.id === product.id ? { ...i, qty: i.qty + 1 } : i
+          i.cartKey === cartKey ? { ...i, qty: i.qty + 1 } : i
         )
       }
-      return [...prev, { ...product, qty: 1 }]
+      return [...prev, { ...product, image, variant, cartKey, qty: 1 }]
     })
   }
 
-  function removeItem(id) {
-    setItems(prev => prev.filter(i => i.id !== id))
+  function removeItem(cartKey) {
+    setItems(prev => prev.filter(i => i.cartKey !== cartKey))
   }
 
-  function updateQty(id, qty) {
-    if (qty <= 0) return removeItem(id)
-    setItems(prev => prev.map(i => i.id === id ? { ...i, qty } : i))
+  function updateQty(cartKey, qty) {
+    if (qty <= 0) return removeItem(cartKey)
+    setItems(prev => prev.map(i => i.cartKey === cartKey ? { ...i, qty } : i))
   }
 
   function clearCart() {

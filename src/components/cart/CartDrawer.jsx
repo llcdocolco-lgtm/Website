@@ -41,7 +41,7 @@ export default function CartDrawer({ onCheckout }) {
                   <AnimatePresence>
                     {items.map(item => (
                       <motion.div
-                        key={item.id}
+                        key={item.cartKey}
                         className="drawer-item"
                         layout
                         initial={{ opacity: 0, x: 20 }}
@@ -55,15 +55,17 @@ export default function CartDrawer({ onCheckout }) {
                           onError={e => { e.target.src = '/img/placeholder.svg' }}
                         />
                         <div className="drawer-item-info">
-                          <div className="drawer-item-name">{item.name}</div>
+                          <div className="drawer-item-name">
+                            {item.name}{item.variant ? ` — ${item.variant}` : ''}
+                          </div>
                           <div className="drawer-item-price">${(item.boxPrice * item.qty).toFixed(2)}</div>
                           <div className="qty-controls">
-                            <button onClick={() => updateQty(item.id, item.qty - 1)}>−</button>
+                            <button onClick={() => updateQty(item.cartKey, item.qty - 1)}>−</button>
                             <span>{item.qty}</span>
-                            <button onClick={() => updateQty(item.id, item.qty + 1)}>+</button>
+                            <button onClick={() => updateQty(item.cartKey, item.qty + 1)}>+</button>
                           </div>
                         </div>
-                        <button className="remove-btn" onClick={() => removeItem(item.id)}>✕</button>
+                        <button className="remove-btn" onClick={() => removeItem(item.cartKey)}>✕</button>
                       </motion.div>
                     ))}
                   </AnimatePresence>

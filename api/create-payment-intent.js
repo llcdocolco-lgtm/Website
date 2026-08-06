@@ -5,6 +5,7 @@
 import Stripe from 'stripe';
 import { readFileSync } from 'fs';
 import { join } from 'path';
+import { variantLabel } from '../src/utils/swatchColor.js';
 
 function generateOrderId() {
   const now  = new Date();
@@ -27,7 +28,7 @@ function loadProducts() {
     if (!p.boxPriceCents || p.boxPriceCents <= 0) {
       throw new Error(`Product ${p.id} (${p.name}) has invalid boxPriceCents: ${p.boxPriceCents}`);
     }
-    map[String(p.id)] = { name: p.name, price: p.boxPriceCents };
+    map[String(p.id)] = { name: p.name, price: p.boxPriceCents, images: p.images || null };
   }
   return map;
 }
@@ -75,10 +76,22 @@ export default async function handler(req, res) {
       if (!quantity || quantity < 1 || quantity > 99) {
         return res.status(400).json({ error: `Invalid quantity for product ${item.id}` });
       }
+
+      // Solo se acepta un variant si coincide con una de las fotos reales del
+      // producto (nunca se confia en texto libre enviado por el cliente).
+      let variant = null;
+      if (product.images && item.variant) {
+        const allowed = product.images.map(img => variantLabel(product.images, img));
+        if (allowed.includes(item.variant)) variant = item.variant;
+      }
+
       lineItems.push({
         price_data: {
           currency: 'usd',
-          product_data: { name: product.name },
+          product_data: {
+            name: variant ? `${product.name} — ${variant}` : product.name,
+            ...(variant ? { metadata: { variant } } : {}),
+          },
           unit_amount: product.price,
         },
         quantity,
