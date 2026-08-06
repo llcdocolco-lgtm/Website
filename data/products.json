@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-06T20:18:38Z",
+  "generated": "2026-08-06T20:19:20Z",
   "total": 11,
   "categories": [
     "Cleaning",
@@ -120,7 +120,7 @@
       "boxPrice": 33.6,
       "boxPriceCents": 3360,
       "boxContents": "12 Units/Box",
-      "image": "img/productos/dishwashing-liquid.png",
+      "image": "img/productos/761789.jpg",
       "imageSource": "product-images.json",
       "available": true
     },
