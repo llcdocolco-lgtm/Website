@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-06T01:48:16Z",
+  "generated": "2026-08-06T01:48:36Z",
   "total": 10,
   "categories": [
     "Cleaning",
@@ -55,13 +55,13 @@
       "name": "Liquid Detergent 4L",
       "category": "cleaning",
       "categoryLabel": "Cleaning",
-      "unitPrice": 6.38,
-      "unitCents": 638,
-      "boxPrice": 63.8,
-      "boxPriceCents": 6380,
+      "unitPrice": 8.6,
+      "unitCents": 860,
+      "boxPrice": 34.4,
+      "boxPriceCents": 3440,
       "boxContents": "4 Units/Box",
       "image": "img/productos/liquid_detergent.png",
-      "imageSource": "map -> liquid_detergent.png",
+      "imageSource": "product-images.json",
       "available": true
     },
     {
