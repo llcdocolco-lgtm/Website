@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-06T01:48:36Z",
+  "generated": "2026-08-06T01:49:07Z",
   "total": 10,
   "categories": [
     "Cleaning",
@@ -143,13 +143,13 @@
       "name": "Garbage Bags 3-pack",
       "category": "waste",
       "categoryLabel": "Waste",
-      "unitPrice": 3.3,
-      "unitCents": 330,
-      "boxPrice": 33.0,
-      "boxPriceCents": 3300,
+      "unitPrice": 3.8,
+      "unitCents": 380,
+      "boxPrice": 38.0,
+      "boxPriceCents": 3800,
       "boxContents": "10 Packs/Box",
       "image": "img/productos/garbage-bag.png",
-      "imageSource": "map -> garbage-bag.png",
+      "imageSource": "product-images.json",
       "available": true
     }
   ]
