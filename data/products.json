@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-06T01:47:45Z",
+  "generated": "2026-08-06T01:48:16Z",
   "total": 10,
   "categories": [
     "Cleaning",
@@ -41,13 +41,13 @@
       "name": "Liquid Detergent 1L",
       "category": "cleaning",
       "categoryLabel": "Cleaning",
-      "unitPrice": 2.3,
-      "unitCents": 230,
-      "boxPrice": 23.0,
-      "boxPriceCents": 2300,
+      "unitPrice": 2.9,
+      "unitCents": 290,
+      "boxPrice": 34.8,
+      "boxPriceCents": 3480,
       "boxContents": "12 Units/Box",
       "image": "img/productos/761765.png",
-      "imageSource": "SKU file",
+      "imageSource": "product-images.json",
       "available": true
     },
     {
