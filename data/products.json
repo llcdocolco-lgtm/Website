@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-06T20:17:07Z",
+  "generated": "2026-08-06T20:17:26Z",
   "total": 11,
   "categories": [
     "Cleaning",
@@ -64,7 +64,7 @@
       "boxPrice": 34.4,
       "boxPriceCents": 3440,
       "boxContents": "4 Units/Box",
-      "image": "img/productos/liquid_detergent.png",
+      "image": "img/productos/761710.jpg",
       "imageSource": "product-images.json",
       "available": true
     },
