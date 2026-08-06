@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-06T20:13:11Z",
+  "generated": "2026-08-06T20:16:21Z",
   "total": 11,
   "categories": [
     "Cleaning",
@@ -18,9 +18,13 @@
       "boxPrice": 237.6,
       "boxPriceCents": 23760,
       "boxContents": "12 Dozens",
-      "image": "img/productos/3870540.png",
+      "image": "img/productos/3870540-1.jpg",
       "imageSource": "product-images.json",
-      "available": true
+      "available": true,
+      "images": [
+        "img/productos/3870540-1.jpg",
+        "img/productos/3870540-2.jpg"
+      ]
     },
     {
       "id": "3870541",
