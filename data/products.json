@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-06T03:17:50Z",
+  "generated": "2026-08-06T17:02:12Z",
   "total": 11,
   "categories": [
     "Cleaning",
@@ -32,8 +32,8 @@
       "boxPrice": 31.0,
       "boxPriceCents": 3100,
       "boxContents": "28 Rolls/Box",
-      "image": "img/productos/cling-wrap.png",
-      "imageSource": "map -> cling-wrap.png",
+      "image": "img/productos/3870541.jpg",
+      "imageSource": "product-images.json",
       "available": true
     },
     {
