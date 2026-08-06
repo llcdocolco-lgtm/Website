@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-06T00:56:50Z",
+  "generated": "2026-08-06T01:03:11Z",
   "total": 10,
   "categories": [
     "Cleaning",
@@ -18,7 +18,7 @@
       "boxPrice": 16.5,
       "boxPriceCents": 1650,
       "boxContents": "12 Dozens",
-      "image": "img/productos/3870540.jpg",
+      "image": "img/productos/3870540.png",
       "imageSource": "SKU file",
       "available": true
     },
@@ -46,8 +46,8 @@
       "boxPrice": 23.0,
       "boxPriceCents": 2300,
       "boxContents": "12 Units/Box",
-      "image": "img/productos/761765.jpg",
-      "imageSource": "product-images.json",
+      "image": "img/productos/761765.png",
+      "imageSource": "SKU file",
       "available": true
     },
     {
@@ -88,8 +88,8 @@
       "boxPrice": 63.8,
       "boxPriceCents": 6380,
       "boxContents": "4 Units/Box",
-      "image": "img/productos/cloth-softener.png",
-      "imageSource": "map -> cloth-softener.png",
+      "image": "img/productos/761772.png",
+      "imageSource": "SKU file",
       "available": true
     },
     {
@@ -131,12 +131,8 @@
       "boxPriceCents": 1630,
       "boxContents": "12 Units/Box",
       "image": "img/productos/floor-cleaner-pomegranate.png",
-      "imageSource": "product-images.json",
-      "available": true,
-      "images": [
-        "img/productos/floor-cleaner-pomegranate.png",
-        "img/productos/floor-cleaner-azul.png"
-      ]
+      "imageSource": "map -> floor-cleaner-pomegranate.png",
+      "available": true
     },
     {
       "id": "7907173",
