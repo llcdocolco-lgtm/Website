@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-06T02:08:47Z",
+  "generated": "2026-08-06T02:09:41Z",
   "total": 11,
   "categories": [
     "Cleaning",
@@ -122,13 +122,13 @@
     },
     {
       "id": "761796",
-      "name": "Floor Cleaner Lime Pomegranate 1L",
+      "name": "Floor Cleaner  1L",
       "category": "cleaning",
       "categoryLabel": "Cleaning",
-      "unitPrice": 1.63,
-      "unitCents": 163,
-      "boxPrice": 16.3,
-      "boxPriceCents": 1630,
+      "unitPrice": 2.3,
+      "unitCents": 230,
+      "boxPrice": 27.6,
+      "boxPriceCents": 2760,
       "boxContents": "12 Units/Box",
       "image": "img/productos/floor-cleaner-pomegranate.png",
       "imageSource": "product-images.json",
