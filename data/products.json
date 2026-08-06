@@ -1,6 +1,6 @@
 {
-  "generated": "2026-08-06T01:49:07Z",
-  "total": 10,
+  "generated": "2026-08-06T02:08:33Z",
+  "total": 11,
   "categories": [
     "Cleaning",
     "Packaging",
@@ -136,6 +136,24 @@
       "images": [
         "img/productos/floor-cleaner-pomegranate.png",
         "img/productos/761727.png"
+      ]
+    },
+    {
+      "id": "761741",
+      "name": "Floor Cleaner Lime Pomegranate 4L",
+      "category": "cleaning",
+      "categoryLabel": "Cleaning",
+      "unitPrice": 6.38,
+      "unitCents": 638,
+      "boxPrice": 25.52,
+      "boxPriceCents": 2552,
+      "boxContents": "4 Units/Box",
+      "image": "img/productos/761741.png",
+      "imageSource": "product-images.json",
+      "available": true,
+      "images": [
+        "img/productos/761741.png",
+        "img/productos/761734.png"
       ]
     },
     {
