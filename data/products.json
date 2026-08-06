@@ -1,6 +1,6 @@
 {
-  "generated": "2026-08-06T01:07:17Z",
-  "total": 13,
+  "generated": "2026-08-06T01:30:32Z",
+  "total": 11,
   "categories": [
     "Cleaning",
     "Packaging",
@@ -131,8 +131,12 @@
       "boxPriceCents": 1630,
       "boxContents": "12 Units/Box",
       "image": "img/productos/floor-cleaner-pomegranate.png",
-      "imageSource": "map -> floor-cleaner-pomegranate.png",
-      "available": true
+      "imageSource": "product-images.json",
+      "available": true,
+      "images": [
+        "img/productos/floor-cleaner-pomegranate.png",
+        "img/productos/761727.png"
+      ]
     },
     {
       "id": "761741",
@@ -146,35 +150,11 @@
       "boxContents": "4 Units/Box",
       "image": "img/productos/761741.png",
       "imageSource": "product-images.json",
-      "available": true
-    },
-    {
-      "id": "761727",
-      "name": "Floor Cleaner Sea Breeze 1L",
-      "category": "cleaning",
-      "categoryLabel": "Cleaning",
-      "unitPrice": 2.63,
-      "unitCents": 263,
-      "boxPrice": 26.3,
-      "boxPriceCents": 2630,
-      "boxContents": "12 Units/Box",
-      "image": "img/productos/761727.png",
-      "imageSource": "SKU file",
-      "available": true
-    },
-    {
-      "id": "761734",
-      "name": "Floor Cleaner Sea Breeze 4L",
-      "category": "cleaning",
-      "categoryLabel": "Cleaning",
-      "unitPrice": 4.68,
-      "unitCents": 468,
-      "boxPrice": 46.8,
-      "boxPriceCents": 4680,
-      "boxContents": "4 Units/Box",
-      "image": "img/productos/761734.png",
-      "imageSource": "SKU file",
-      "available": true
+      "available": true,
+      "images": [
+        "img/productos/761741.png",
+        "img/productos/761734.png"
+      ]
     },
     {
       "id": "7907173",
